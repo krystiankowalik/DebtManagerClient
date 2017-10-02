@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import kryx07.expensereconcilerclient.App
 import kryx07.expensereconcilerclient.R
-import kryx07.expensereconcilerclient.model.transactions.Transactions
+import kryx07.expensereconcilerclient.model.transactions.Transaction
 import kryx07.expensereconcilerclient.ui.DashboardActivity
 import kryx07.expensereconcilerclient.ui.transactions.TransactionDetailMvpView
 import kryx07.expensereconcilerclient.ui.transactions.TransactionsAdapter
@@ -45,7 +45,7 @@ class TransactionDetailFragment : Fragment(), TransactionDetailMvpView {
         super.onDestroyView()
     }
 
-    override fun updateData(transactions: Transactions) {
+    override fun updateData(transactions: List<Transaction>) {
         adapter.updateData(transactions)
     }
 

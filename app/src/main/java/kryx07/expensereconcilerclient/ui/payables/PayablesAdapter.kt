@@ -8,13 +8,12 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.item_payables_adapter.view.*
 import kryx07.expensereconcilerclient.R
 import kryx07.expensereconcilerclient.model.transactions.Payable
-import kryx07.expensereconcilerclient.model.transactions.Payables
 import kryx07.expensereconcilerclient.utils.StringUtilities
 import timber.log.Timber
 
 class PayablesAdapter(var currentUserName: String) : RecyclerView.Adapter<PayablesAdapter.PayablesHolder>() {
 
-    var payables = Payables(mutableListOf<Payable>())
+    var payables = (mutableListOf<Payable>())
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): PayablesHolder {
         Timber.e("onCreateViewHolder")
@@ -23,10 +22,10 @@ class PayablesAdapter(var currentUserName: String) : RecyclerView.Adapter<Payabl
 
     override fun onBindViewHolder(holder: PayablesHolder?, position: Int) {
         Timber.e("onBindViewHolder")
-        holder?.setupItem(payables.payables[position])
+        holder?.setupItem(payables[position])
     }
 
-    override fun getItemCount(): Int = payables.payables.size
+    override fun getItemCount(): Int = payables.size
 
     class PayablesHolder(itemView: View, val currentUserId: String) : RecyclerView.ViewHolder(itemView) {
 
@@ -53,7 +52,7 @@ class PayablesAdapter(var currentUserName: String) : RecyclerView.Adapter<Payabl
 
     }
 
-    fun updateData(payables: Payables) {
+    fun updateData(payables: List<Payable>) {
         Timber.e("update Data: " + payables)
 
         this.payables.clear()

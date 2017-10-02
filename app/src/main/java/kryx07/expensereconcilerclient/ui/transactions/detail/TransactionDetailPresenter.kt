@@ -8,7 +8,6 @@ import kryx07.expensereconcilerclient.db.MyDatabase
 import kryx07.expensereconcilerclient.events.HideProgress
 import kryx07.expensereconcilerclient.events.HideRefresher
 import kryx07.expensereconcilerclient.events.ShowProgress
-import kryx07.expensereconcilerclient.model.transactions.Transactions
 import kryx07.expensereconcilerclient.network.ApiClient
 import kryx07.expensereconcilerclient.ui.transactions.TransactionDetailMvpView
 import kryx07.expensereconcilerclient.utils.SharedPreferencesManager
@@ -19,9 +18,8 @@ import retrofit2.Response
 import timber.log.Timber
 import javax.inject.Inject
 
-/**
- * Created by wd40 on 13.07.17.
- */
+
+
 class TransactionDetailPresenter @Inject constructor(var apiClient: ApiClient,
                                                      var context: Context,
                                                      val sharedPrefs: SharedPreferencesManager,
@@ -33,8 +31,8 @@ class TransactionDetailPresenter @Inject constructor(var apiClient: ApiClient,
 
     fun requestTransactions() {
         showProgress()
-
-        apiClient.service.getTransactions(sharedPrefs.read(context.getString(R.string.my_user)))
+/*
+        apiClient.service.getUsersTransactions(sharedPrefs.read(context.getString(R.string.my_user)))
                 .enqueue(object : Callback<Transactions> {
                     override fun onResponse(call: Call<Transactions>?, response: Response<Transactions>?) {
                         if (response!!.isSuccessful) {
@@ -55,7 +53,7 @@ class TransactionDetailPresenter @Inject constructor(var apiClient: ApiClient,
                         showErrorMessage()
                         hideProgress()
                     }
-                })
+                })*/
     }
 
     private fun showProgress() {

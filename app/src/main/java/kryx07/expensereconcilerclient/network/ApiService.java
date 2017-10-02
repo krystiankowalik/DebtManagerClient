@@ -2,26 +2,23 @@ package kryx07.expensereconcilerclient.network;
 
 import java.util.List;
 
-import kryx07.expensereconcilerclient.model.transactions.Payables;
 import kryx07.expensereconcilerclient.model.transactions.Transaction;
-import kryx07.expensereconcilerclient.model.transactions.Transactions;
 import kryx07.expensereconcilerclient.model.users.Users;
 import retrofit2.Call;
-import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
-import retrofit2.http.QueryMap;
 
 public interface ApiService {
 
     @GET("users/all")
     Call<Users> getUsers();
 
-    @GET("transactions/by-user")
-    Call<Transactions> getTransactions(@Query("username") String username);
+    @GET("users/{id}/transactions")
+    Call<List<Transaction>> getUsersTransactions(@Path("id") int id);
 
-    @GET("/reconciliation/payables-by-user")
-    Call<Payables> getPayables(@Query("username") String username);
+    /*@GET("/reconciliation/payables-by-user")
+    Call<Payables> getPayables(@Query("username") String username);*/
 /*
 
     @GET("payables/all")

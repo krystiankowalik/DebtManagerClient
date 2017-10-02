@@ -7,13 +7,12 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.item_transactions_adapter.view.*
 import kryx07.expensereconcilerclient.R
 import kryx07.expensereconcilerclient.model.transactions.Transaction
-import kryx07.expensereconcilerclient.model.transactions.Transactions
 import kryx07.expensereconcilerclient.utils.StringUtilities
 import timber.log.Timber
 
 class TransactionsAdapter : RecyclerView.Adapter<TransactionsAdapter.TransactionsHolder>() {
 
-    var transactions = Transactions(mutableListOf<Transaction>())
+    var transactions = (mutableListOf<Transaction>())
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): TransactionsHolder {
         Timber.e("onCreateViewHolder")
@@ -22,10 +21,10 @@ class TransactionsAdapter : RecyclerView.Adapter<TransactionsAdapter.Transaction
 
     override fun onBindViewHolder(holder: TransactionsHolder?, position: Int) {
         Timber.e("onBindViewHolder")
-        holder?.setupTransaction(transactions.transactions[position])
+        holder?.setupTransaction(transactions[position])
     }
 
-    override fun getItemCount(): Int = transactions.transactions.size
+    override fun getItemCount(): Int = transactions.size
 
     class TransactionsHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -40,11 +39,11 @@ class TransactionsAdapter : RecyclerView.Adapter<TransactionsAdapter.Transaction
 
     }
 
-    fun updateData(transactions: Transactions) {
+    fun updateData(transactions: List<Transaction>) {
         Timber.e("update Data: " + transactions)
 
         this.transactions.clear()
-        this.transactions.addAll(transactions.transactions)
+        this.transactions.addAll(transactions)
         notifyDataSetChanged()
     }
 }

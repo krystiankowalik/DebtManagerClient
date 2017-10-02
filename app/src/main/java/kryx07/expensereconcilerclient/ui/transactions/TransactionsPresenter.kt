@@ -8,7 +8,7 @@ import kryx07.expensereconcilerclient.db.MyDatabase
 import kryx07.expensereconcilerclient.events.HideProgress
 import kryx07.expensereconcilerclient.events.ShowProgress
 import kryx07.expensereconcilerclient.events.HideRefresher
-import kryx07.expensereconcilerclient.model.transactions.Transactions
+import kryx07.expensereconcilerclient.model.transactions.Transaction
 import kryx07.expensereconcilerclient.network.ApiClient
 import kryx07.expensereconcilerclient.utils.SharedPreferencesManager
 import org.greenrobot.eventbus.EventBus
@@ -30,24 +30,27 @@ class TransactionsPresenter @Inject constructor(var apiClient: ApiClient,
     fun requestTransactions() {
         showProgress()
 
-        apiClient.service.getTransactions(sharedPrefs.read(context.getString(R.string.my_user)))
-                .enqueue(object : Callback<Transactions> {
-                    override fun onResponse(call: Call<Transactions>?, response: Response<Transactions>?) {
+        Timber.d(sharedPrefs.read(context.getString(R.string.my_user)))
+
+        apiClient.service.getUsersTransactions(sharedPrefs.read(context.getString(R.string.my_user)).toInt())
+                .enqueue(object : Callback<List<Transaction>> {
+                    override fun onResponse(call: Call<List<Transaction>>?, response: Response<List<Transaction>>?) {
                         if (response!!.isSuccessful) {
                             Timber.e(response.body().toString())
                             val transactions = response.body()
-                            view?.updateData(transactions)
+                            //view?.updateData(transactions)
 
-                            for (transaction in transactions.transactions) {
+                            for (transaction in transactions) {
                                 database.transactionDao().insert(transaction)
                             }
+                            view.updateData(transactions)
                             Timber.e("Read from db: " + database.transactionDao().getAll().toString())
 
                         }
                         hideProgress()
                     }
 
-                    override fun onFailure(call: Call<Transactions>?, t: Throwable?) {
+                    override fun onFailure(call: Call<List<Transaction>>?, t: Throwable?) {
                         showErrorMessage()
                         hideProgress()
                     }

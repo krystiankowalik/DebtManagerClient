@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.fragment_payables.view.*
 import kryx07.expensereconcilerclient.App
 import kryx07.expensereconcilerclient.R
 import kryx07.expensereconcilerclient.base.RefreshableFragment
-import kryx07.expensereconcilerclient.model.transactions.Payables
+import kryx07.expensereconcilerclient.model.transactions.Payable
 import kryx07.expensereconcilerclient.ui.DashboardActivity
 import kryx07.expensereconcilerclient.ui.transactions.*
 import kryx07.expensereconcilerclient.utils.SharedPreferencesManager
@@ -57,7 +57,7 @@ class PayablesFragment : RefreshableFragment(), PayablesMvpView {
         super.onDestroyView()
     }
 
-    override fun updateData(payables: Payables) {
+    override fun updateData(payables: List<Payable>) {
         adapter.updateData(payables)
     }
 

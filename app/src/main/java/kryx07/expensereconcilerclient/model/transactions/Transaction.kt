@@ -16,18 +16,17 @@ import java.math.BigDecimal
 @Entity(tableName = "transactions")
 class Transaction : Serializable {
 
-    @PrimaryKey var id: String? = null
+    @PrimaryKey var id: Int? = null
     var amount: BigDecimal? = null
     var description: String? = null
     var date: LocalDate? = null
     var common: Boolean? = null
-    @Embedded var payer: User? = null
-    @Ignore var users: Users? = null
-    @Ignore var payables: Payables? = null
+    //@Embedded var payer: User? = null
+    //@Embedded var group: Group? = null
+    //@Ignore var payables: Payables? = null
 
-    override fun toString(): String {
-        return "Transaction(id=$id, amount=$amount, description=$description, date=$date, common=$common, payer=$payer, users=$users, payables=$payables)"
-    }
+    override fun toString(): String =
+            "Transaction(id=$id, amount=$amount, description=$description, date=$date, common=$common)"
 
 
 }

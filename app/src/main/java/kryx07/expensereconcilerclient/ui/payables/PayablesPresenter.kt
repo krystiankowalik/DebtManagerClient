@@ -8,7 +8,7 @@ import kryx07.expensereconcilerclient.db.MyDatabase
 import kryx07.expensereconcilerclient.events.HideProgress
 import kryx07.expensereconcilerclient.events.HideRefresher
 import kryx07.expensereconcilerclient.events.ShowProgress
-import kryx07.expensereconcilerclient.model.transactions.Payables
+import kryx07.expensereconcilerclient.model.transactions.Payable
 import kryx07.expensereconcilerclient.network.ApiClient
 import kryx07.expensereconcilerclient.ui.transactions.PayablesMvpView
 import kryx07.expensereconcilerclient.utils.SharedPreferencesManager
@@ -32,9 +32,9 @@ class PayablesPresenter @Inject constructor(var apiClient: ApiClient,
     fun requestPayables() {
         showProgress()
 
-        apiClient.service.getPayables(sharedprefs.read(context.getString(R.string.my_user))).enqueue(object : Callback<Payables> {
+        /*apiClient.service.getPayables(sharedprefs.read(context.getString(R.string.my_user))).enqueue(object : Callback<List<Payable>> {
 
-            override fun onResponse(call: Call<Payables>?, response: Response<Payables>?) {
+            override fun onResponse(call: Call<List<Payable>>?, response: Response<List<Payable>>?) {
                 if (response!!.isSuccessful) {
                     Timber.e(response.body().toString())
                     val payables = response.body()
@@ -53,7 +53,7 @@ class PayablesPresenter @Inject constructor(var apiClient: ApiClient,
                 hideProgress()
             }
 
-        })
+        })*/
     }
 
     private fun showProgress() {
@@ -65,18 +65,18 @@ class PayablesPresenter @Inject constructor(var apiClient: ApiClient,
         EventBus.getDefault().post(HideRefresher())
     }
 
-    private fun setTotals(allPayables: Payables) {
+    private fun setTotals(allPayables: List<Payable>) {
         var myPayables = BigDecimal(0)
         var myReceivables = BigDecimal(0)
         val myUserName = sharedprefs.read(context.getString(R.string.my_user))
 
-        allPayables.payables.forEach { (id, debtor, payer, amount) ->
+        /*allPayables.payables.forEach { (id, debtor, payer, amount) ->
             if (debtor.userName == myUserName) {
                 myReceivables = myReceivables.add(amount)
             } else if (payer.userName == myUserName) {
                 myPayables = myPayables.add(amount)
             }
-        }
+        }*/
 
         view.updateTotals(myReceivables, myPayables)
     }

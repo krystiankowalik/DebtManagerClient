@@ -38,7 +38,7 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
         App.appComponent.inject(this)
 
         //to be replaced with login!!!
-        sharedPreferencesManager.write(getString(R.string.my_user), "testuser1")
+        sharedPreferencesManager.write(getString(R.string.my_user), "2")
 
         dashboard_progress.indeterminateDrawable.setColorFilter(Color.GRAY, android.graphics.PorterDuff.Mode.SRC_IN)
     }
