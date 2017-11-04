@@ -6,7 +6,7 @@ import android.arch.persistence.room.TypeConverters
 import kryx07.expensereconcilerclient.model.transactions.Payable
 import kryx07.expensereconcilerclient.model.transactions.Transaction
 
-@Database(entities = arrayOf(Transaction::class, Payable::class), version = 6)
+@Database(entities = arrayOf(Transaction::class, Payable::class), version = 8)
 @TypeConverters(*arrayOf(Converters::class))
 abstract class MyDatabase : RoomDatabase() {
 

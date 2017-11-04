@@ -16,4 +16,6 @@ interface PayablesDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(payable: Payable)
+
+
 }

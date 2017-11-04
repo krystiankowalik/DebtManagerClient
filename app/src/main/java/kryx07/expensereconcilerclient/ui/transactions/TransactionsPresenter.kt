@@ -2,6 +2,9 @@ package kryx07.expensereconcilerclient.ui.transactions
 
 import android.content.Context
 import android.widget.Toast
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kryx07.expensereconcilerclient.R
 import kryx07.expensereconcilerclient.base.BasePresenter
 import kryx07.expensereconcilerclient.db.MyDatabase
@@ -12,16 +15,13 @@ import kryx07.expensereconcilerclient.model.transactions.Transaction
 import kryx07.expensereconcilerclient.network.ApiClient
 import kryx07.expensereconcilerclient.utils.SharedPreferencesManager
 import org.greenrobot.eventbus.EventBus
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import timber.log.Timber
 import javax.inject.Inject
 
-class TransactionsPresenter @Inject constructor(var apiClient: ApiClient,
+class TransactionsPresenter @Inject constructor(private var apiClient: ApiClient,
                                                 var context: Context,
-                                                val sharedPrefs: SharedPreferencesManager,
-                                                val database: MyDatabase) : BasePresenter<TransactionsMvpView>() {
+                                                private val sharedPrefs: SharedPreferencesManager,
+                                                private val database: MyDatabase) : BasePresenter<TransactionsMvpView>() {
 
     fun start() {
         requestTransactions()
@@ -32,29 +32,55 @@ class TransactionsPresenter @Inject constructor(var apiClient: ApiClient,
 
         Timber.d(sharedPrefs.read(context.getString(R.string.my_user)))
 
-        apiClient.service.getUsersTransactions(sharedPrefs.read(context.getString(R.string.my_user)).toInt())
-                .enqueue(object : Callback<List<Transaction>> {
-                    override fun onResponse(call: Call<List<Transaction>>?, response: Response<List<Transaction>>?) {
-                        if (response!!.isSuccessful) {
-                            Timber.e(response.body().toString())
-                            val transactions = response.body()
-                            //view?.updateData(transactions)
+        apiClient.service
+                .getUsersTransactions(sharedPrefs.read(context.getString(R.string.my_user)).toInt())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ transactions ->
+                    handleSuccessFullApiRequest(transactions)
+                }, { error ->
+                    handleFailedApiRequest(error)
+                    hideProgress()
+                    Timber.e(error.message)
+                }
+                )
+    }
 
-                            for (transaction in transactions) {
-                                database.transactionDao().insert(transaction)
-                            }
-                            view.updateData(transactions)
-                            Timber.e("Read from db: " + database.transactionDao().getAll().toString())
+    private fun handleSuccessFullApiRequest(transactions: List<Transaction>) {
+        insertTransactionsToDb(transactions)
 
-                        }
-                        hideProgress()
-                    }
+        readTransactionsFromDb()
 
-                    override fun onFailure(call: Call<List<Transaction>>?, t: Throwable?) {
-                        showErrorMessage()
-                        hideProgress()
-                    }
-                })
+        updateData(transactions)
+    }
+
+    private fun readTransactionsFromDb() {
+        database.transactionDao().getAll()
+                .subscribeOn(Schedulers.io())
+                // .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ transactionsFromDb ->
+                    Timber.e("Read from DB: ")
+                    transactionsFromDb.forEach({ t -> Timber.e(t.toString()) })
+                }, { error -> Timber.e("some error") })
+    }
+
+    private fun insertTransactionsToDb(transactions: List<Transaction>) {
+        Observable.fromCallable {
+            database.transactionDao()
+                    .insert(transactions)
+        }
+                .subscribeOn(Schedulers.computation())
+                .subscribe()
+    }
+
+    private fun handleFailedApiRequest(error: Throwable) {
+        hideProgress()
+        Timber.e(error.message)
+    }
+
+    private fun updateData(transactions: List<Transaction>) {
+        hideProgress()
+        view.updateData(transactions)
     }
 
     private fun showProgress() {

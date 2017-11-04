@@ -8,6 +8,7 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
+import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -32,7 +33,8 @@ import timber.log.Timber;
 public class ApiClient {
 
     //private static final String BASE_URL = "http://localhost:8090/";
-    private static final String BASE_URL = "http://89.70.46.105:8090/";
+    private static final String BASE_URL = "http://192.168.0.12:8090/";
+    //private static final String BASE_URL = "http://89.70.46.105:8090/";
 //    private static final String BASE_URL = "http://192.168.43.231:8090/";
 
     private ApiService service;
@@ -80,7 +82,6 @@ public class ApiClient {
                 .setDateFormat("yyyy-MM-dd").create();*/
 
         Gson gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new JsonDeserializer<LocalDate>() {
-
             @Override
             public LocalDate deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
                 return new LocalDate(json.getAsString());
@@ -91,6 +92,7 @@ public class ApiClient {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(clientBuilder.build())
                 .build();
 

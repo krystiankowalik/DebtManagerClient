@@ -34,7 +34,8 @@ class AppModule(private val context: Context) {
     fun providesDb(context: Context): MyDatabase {
         return Room
                 .databaseBuilder(context, MyDatabase::class.java, "we-need-db")
-                .allowMainThreadQueries()
+                //.fallbackToDestructiveMigration()
+                //.allowMainThreadQueries()
                 .build()
     }
 

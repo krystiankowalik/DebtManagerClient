@@ -2,6 +2,7 @@ package kryx07.expensereconcilerclient.network;
 
 import java.util.List;
 
+import io.reactivex.Observable;
 import kryx07.expensereconcilerclient.model.transactions.Transaction;
 import kryx07.expensereconcilerclient.model.users.Users;
 import retrofit2.Call;
@@ -15,7 +16,7 @@ public interface ApiService {
     Call<Users> getUsers();
 
     @GET("users/{id}/transactions")
-    Call<List<Transaction>> getUsersTransactions(@Path("id") int id);
+    Observable<List<Transaction>> getUsersTransactions(@Path("id") int id);
 
     /*@GET("/reconciliation/payables-by-user")
     Call<Payables> getPayables(@Query("username") String username);*/
