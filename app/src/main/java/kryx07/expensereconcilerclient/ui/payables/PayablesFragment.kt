@@ -1,3 +1,4 @@
+/*
 package kryx07.expensereconcilerclient.ui.payables
 
 import android.os.Bundle
@@ -73,4 +74,4 @@ class PayablesFragment : RefreshableFragment(), PayablesMvpView {
         presenter.requestPayables()
     }
 
-}
+}*/

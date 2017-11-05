@@ -1,3 +1,4 @@
+/*
 package kryx07.expensereconcilerclient.ui.payables
 
 import android.support.v4.content.ContextCompat
@@ -11,8 +12,9 @@ import kryx07.expensereconcilerclient.model.transactions.Payable
 import kryx07.expensereconcilerclient.utils.StringUtilities
 import timber.log.Timber
 
-class PayablesAdapter(var currentUserName: String) : RecyclerView.Adapter<PayablesAdapter.PayablesHolder>() {
-
+class PayablesAdapter(var currentUserName: String) {//: RecyclerView.Adapter<PayablesAdapter.PayablesHolder>() {
+*/
+/*
     var payables = (mutableListOf<Payable>())
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): PayablesHolder {
@@ -35,16 +37,16 @@ class PayablesAdapter(var currentUserName: String) : RecyclerView.Adapter<Payabl
 
             //itemView.amount.text = "%.2f".format(payable.amount) + " " + itemView.context.getString(R.string.currency)
             itemView.amount.text = StringUtilities.formatCurrency(payable.amount, itemView.context.getString(R.string.currency))
-            if (payable.debtor.userName.toString() == currentUserId) {
+            if (payable.debtor.username.toString() == currentUserId) {
                 itemView.type.text = itemView.context.getString(R.string.payable)
                 itemView.direction.text = " -> "
-                itemView.another_person.text = payable.payer.userName
+                itemView.another_person.text = payable.payer.username
                 itemView.amount.setTextColor(ContextCompat.getColor(itemView.context, R.color.red))
 
-            } else if (payable.payer.userName.toString() == currentUserId) {
+            } else if (payable.payer.username.toString() == currentUserId) {
                 itemView.type.text = itemView.context.getString(R.string.receivable)
                 itemView.direction.text = " <- "
-                itemView.another_person.text = payable.debtor.userName
+                itemView.another_person.text = payable.debtor.username
                 itemView.amount.setTextColor(ContextCompat.getColor(itemView.context, R.color.green))
             }
 
@@ -58,5 +60,6 @@ class PayablesAdapter(var currentUserName: String) : RecyclerView.Adapter<Payabl
         this.payables.clear()
         this.payables.addAll(payables)
         notifyDataSetChanged()
-    }
-}
+    }*//*
+
+}*/

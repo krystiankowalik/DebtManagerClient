@@ -9,9 +9,9 @@ import java.io.Serializable
 import java.math.BigDecimal
 
 @Entity(tableName = "Payables")
-data class Payable(@PrimaryKey var id: String,
-                   @Embedded(prefix = "payer")
+data class Payable(@PrimaryKey var id: String)
+                   /*@Embedded(prefix = "payer")
                    var payer: User,
                    @Embedded(prefix = "debtor") var debtor: User,
-                   var amount: BigDecimal) : Serializable
+                   var amount: BigDecimal) : Serializable*/
 

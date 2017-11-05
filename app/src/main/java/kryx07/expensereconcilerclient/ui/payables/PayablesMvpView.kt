@@ -1,3 +1,4 @@
+/*
 package kryx07.expensereconcilerclient.ui.transactions
 
 import kryx07.expensereconcilerclient.base.MvpView
@@ -8,4 +9,4 @@ interface PayablesMvpView :MvpView{
 
     fun updateData(payables: List<Payable>)
     fun updateTotals(receivablesTotal:BigDecimal,payablesTotal:BigDecimal)
-}
+}*/

@@ -1,3 +1,4 @@
+/*
 package kryx07.expensereconcilerclient.ui.payables
 
 import android.content.Context
@@ -32,7 +33,8 @@ class PayablesPresenter @Inject constructor(var apiClient: ApiClient,
     fun requestPayables() {
         showProgress()
 
-        /*apiClient.service.getPayables(sharedprefs.read(context.getString(R.string.my_user))).enqueue(object : Callback<List<Payable>> {
+        */
+/*apiClient.service.getPayables(sharedprefs.read(context.getString(R.string.my_user))).enqueue(object : Callback<List<Payable>> {
 
             override fun onResponse(call: Call<List<Payable>>?, response: Response<List<Payable>>?) {
                 if (response!!.isSuccessful) {
@@ -53,7 +55,8 @@ class PayablesPresenter @Inject constructor(var apiClient: ApiClient,
                 hideProgress()
             }
 
-        })*/
+        })*//*
+
     }
 
     private fun showProgress() {
@@ -70,13 +73,15 @@ class PayablesPresenter @Inject constructor(var apiClient: ApiClient,
         var myReceivables = BigDecimal(0)
         val myUserName = sharedprefs.read(context.getString(R.string.my_user))
 
-        /*allPayables.payables.forEach { (id, debtor, payer, amount) ->
-            if (debtor.userName == myUserName) {
+        */
+/*allPayables.payables.forEach { (id, debtor, payer, amount) ->
+            if (debtor.username == myUserName) {
                 myReceivables = myReceivables.add(amount)
-            } else if (payer.userName == myUserName) {
+            } else if (payer.username == myUserName) {
                 myPayables = myPayables.add(amount)
             }
-        }*/
+        }*//*
+
 
         view.updateTotals(myReceivables, myPayables)
     }
@@ -86,4 +91,4 @@ class PayablesPresenter @Inject constructor(var apiClient: ApiClient,
         Toast.makeText(context, context.getString(R.string.fetching_error), Toast.LENGTH_LONG).show()
     }
 
-}
+}*/

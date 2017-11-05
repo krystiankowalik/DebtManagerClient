@@ -12,18 +12,24 @@ import butterknife.ButterKnife
 import kotlinx.android.synthetic.main.activity_dashboard.*
 import kryx07.expensereconcilerclient.App
 import kryx07.expensereconcilerclient.R
+import kryx07.expensereconcilerclient.R.id.*
+import kryx07.expensereconcilerclient.db.MyDatabase
 import kryx07.expensereconcilerclient.events.HideProgress
 import kryx07.expensereconcilerclient.events.ShowProgress
-import kryx07.expensereconcilerclient.ui.payables.PayablesFragment
+import kryx07.expensereconcilerclient.model.users.Group
+import kryx07.expensereconcilerclient.model.users.User
+//import kryx07.expensereconcilerclient.ui.payables.PayablesFragment
 import kryx07.expensereconcilerclient.ui.transactions.TransactionsFragment
 import kryx07.expensereconcilerclient.utils.SharedPreferencesManager
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import timber.log.Timber
 import javax.inject.Inject
 
 class DashboardActivity @Inject constructor() : AppCompatActivity() {
 
     @Inject lateinit var sharedPreferencesManager: SharedPreferencesManager
+    @Inject lateinit var database: MyDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +47,18 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
         sharedPreferencesManager.write(getString(R.string.my_user), "2")
 
         dashboard_progress.indeterminateDrawable.setColorFilter(Color.GRAY, android.graphics.PorterDuff.Mode.SRC_IN)
+
+        test()
+    }
+
+    fun test() {
+        /*var user: User = User(0, "myuser", "password")
+        database.userDao().insert(user)
+        database.userDao().getAll().forEach({ u -> Timber.e(u.toString()) })*/
+        var group: Group = Group(1,"group")
+        database.groupDao().insert(group)
+
+        database.groupDao().getAll().forEach({ g -> Timber.e(g.toString()) })
     }
 
     override fun onDestroy() {
@@ -63,10 +81,10 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
                     showFragment(TransactionsFragment())
                     return@OnNavigationItemSelectedListener true
                 }
-                R.id.menu_payables -> {
-                    showFragment(PayablesFragment())
-                    return@OnNavigationItemSelectedListener true
-                }
+            /*R.id.menu_payables -> {
+                showFragment(PayablesFragment())
+                return@OnNavigationItemSelectedListener true
+            }*/
             }
             false
         })
@@ -84,7 +102,7 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
         dashboard_progress.visibility = View.GONE
     }
 
-     fun showFragment(fragment: Fragment) {
+    fun showFragment(fragment: Fragment) {
         val tag = fragment.javaClass.name
         val manager = supportFragmentManager
 
