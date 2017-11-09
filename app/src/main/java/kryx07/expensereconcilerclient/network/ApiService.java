@@ -4,19 +4,20 @@ import java.util.List;
 
 import io.reactivex.Observable;
 import kryx07.expensereconcilerclient.model.transactions.Transaction;
-import kryx07.expensereconcilerclient.model.users.Users;
-import retrofit2.Call;
+import kryx07.expensereconcilerclient.model.users.User;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
-import retrofit2.http.Query;
 
 public interface ApiService {
 
-    @GET("users/all")
-    Call<Users> getUsers();
+   /* @GET("users/all")
+    Call<Users> getUsers();*/
 
     @GET("users/{id}/transactions")
     Observable<List<Transaction>> getUsersTransactions(@Path("id") int id);
+
+    @GET("users/")
+    Observable<List<User>> getAllUsers();
 
     /*@GET("/reconciliation/payables-by-user")
     Call<Payables> getPayables(@Query("username") String username);*/

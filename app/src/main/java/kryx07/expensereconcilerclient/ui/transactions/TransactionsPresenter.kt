@@ -7,7 +7,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kryx07.expensereconcilerclient.R
 import kryx07.expensereconcilerclient.base.BasePresenter
-import kryx07.expensereconcilerclient.db.MyDatabase
 import kryx07.expensereconcilerclient.events.HideProgress
 import kryx07.expensereconcilerclient.events.ShowProgress
 import kryx07.expensereconcilerclient.events.HideRefresher
@@ -20,8 +19,8 @@ import javax.inject.Inject
 
 class TransactionsPresenter @Inject constructor(private var apiClient: ApiClient,
                                                 var context: Context,
-                                                private val sharedPrefs: SharedPreferencesManager,
-                                                private val database: MyDatabase) : BasePresenter<TransactionsMvpView>() {
+                                                private val sharedPrefs: SharedPreferencesManager
+                                                ) : BasePresenter<TransactionsMvpView>() {
 
     fun start() {
         requestTransactions()
@@ -47,13 +46,14 @@ class TransactionsPresenter @Inject constructor(private var apiClient: ApiClient
     }
 
     private fun handleSuccessFullApiRequest(transactions: List<Transaction>) {
-        insertTransactionsToDb(transactions)
+        // insertTransactionsToDb(transactions)
 
-        readTransactionsFromDb()
+        // readTransactionsFromDb()
 
         updateData(transactions)
     }
 
+/*
     private fun readTransactionsFromDb() {
         database.transactionDao().getAll()
                 .subscribeOn(Schedulers.io())
@@ -63,15 +63,16 @@ class TransactionsPresenter @Inject constructor(private var apiClient: ApiClient
                     transactionsFromDb.forEach({ t -> Timber.e(t.toString()) })
                 }, { error -> Timber.e("some error") })
     }
+*/
 
-    private fun insertTransactionsToDb(transactions: List<Transaction>) {
-        Observable.fromCallable {
-            database.transactionDao()
-                    .insert(transactions)
-        }
-                .subscribeOn(Schedulers.computation())
-                .subscribe()
-    }
+    /*  private fun insertTransactionsToDb(transactions: List<Transaction>) {
+          Observable.fromCallable {
+              database.transactionDao()
+                      .insert(transactions)
+          }
+                  .subscribeOn(Schedulers.computation())
+                  .subscribe()
+      }*/
 
     private fun handleFailedApiRequest(error: Throwable) {
         hideProgress()

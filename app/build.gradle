@@ -3,12 +3,18 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 //apply plugin: 'realm-android'
+apply plugin: 'io.objectbox'
 
 
 android {
     compileSdkVersion 26
     buildToolsVersion '26.0.2'
     defaultConfig {
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ['objectbox.debug': 'true']
+            }
+        }
         applicationId "kryx07.expensereconcilerclient"
         minSdkVersion 19
         targetSdkVersion 26

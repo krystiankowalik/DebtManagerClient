@@ -5,6 +5,7 @@
     <string name="fetching_error">There was an error fetching your request</string>
 
     <string name="transactions">Transactions</string>
+    <string name="transaction_detail">Transaction Detail</string>
     <string name="payables">Payables</string>
 
     <string name="navigation_drawer_open">Open</string>
@@ -21,5 +22,7 @@
     <string name="date">Date</string>
     <string name="description">Description</string>
     <string name="amount">Amount</string>
+    <string name="payer">Payer</string>
+    <string name="action_search">Search for a user</string>
 
 </resources>

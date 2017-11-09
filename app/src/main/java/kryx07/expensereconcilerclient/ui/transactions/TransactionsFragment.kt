@@ -1,21 +1,21 @@
 package kryx07.expensereconcilerclient.ui.transactions
 
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import butterknife.BindView
 import butterknife.ButterKnife
 import kotlinx.android.synthetic.main.fragment_transactions.view.*
 import kryx07.expensereconcilerclient.App
 import kryx07.expensereconcilerclient.R
 import kryx07.expensereconcilerclient.base.RefreshableFragment
-import kryx07.expensereconcilerclient.ui.DashboardActivity
-import javax.inject.Inject
-import android.support.design.widget.FloatingActionButton
-import android.widget.Toast
-import butterknife.BindView
 import kryx07.expensereconcilerclient.model.transactions.Transaction
+import kryx07.expensereconcilerclient.ui.DashboardActivity
+import kryx07.expensereconcilerclient.ui.transactions.detail.TransactionDetailFragment
+import javax.inject.Inject
 
 
 class TransactionsFragment : RefreshableFragment(), TransactionsMvpView {
@@ -44,6 +44,10 @@ class TransactionsFragment : RefreshableFragment(), TransactionsMvpView {
         presenter.attachView(this)
 
         (activity as DashboardActivity).supportActionBar?.setTitle(R.string.transactions)
+
+       /* val ft = fragmentManager.beginTransaction()
+        ft.replace(R.id.fragment_container, TransactionDetailFragment(), javaClass.name)
+        ft.commit()*/
         return view
     }
 
@@ -71,10 +75,10 @@ class TransactionsFragment : RefreshableFragment(), TransactionsMvpView {
 //      /*  (activity as DashboardActivity).showFragment(TransactionDetailFragment())
 
         floatingActionButton?.setOnClickListener {
-            //            val ft = fragmentManager.beginTransaction()
-//            ft.replace(R.id.fragment_container, TransactionDetailFragment(), javaClass.name)
-//            ft.commit()
-            Toast.makeText(activity.applicationContext, "To be implemented soon :)", Toast.LENGTH_SHORT).show()
+            val ft = fragmentManager.beginTransaction()
+            ft.replace(R.id.fragment_container, TransactionDetailFragment(), javaClass.name)
+            ft.commit()
+            //Toast.makeText(activity.applicationContext, "To be implemented soon :)", Toast.LENGTH_SHORT).show()
 
         }
     }
