@@ -59,10 +59,22 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
         setSupportActionBar(dashboard_toolbar)
         val toggle = ActionBarDrawerToggle(
                 this, dashboard_drawer, dashboard_toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-        // Handle clicks on drawer
+        setupNavigationListener(toggle)
         dashboard_drawer.addDrawerListener(toggle)
-        // Sync state to have a hamburger menu icon
         toggle.syncState()
+    }
+
+    private fun setupNavigationListener(toggle: ActionBarDrawerToggle) {
+        supportFragmentManager.addOnBackStackChangedListener {
+            if (supportFragmentManager.backStackEntryCount > 1) {
+                toggle.isDrawerIndicatorEnabled = false
+                supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+                toggle.setToolbarNavigationClickListener { onBackPressed() }
+            } else {
+                supportActionBar!!.setDisplayHomeAsUpEnabled(false)
+                toggle.isDrawerIndicatorEnabled = true
+            }
+        }
     }
 
 
@@ -81,6 +93,7 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
             false
         })
     }
+
 
     private fun getVisibleFragment(): Fragment? {
         val fragmentManager = supportFragmentManager
