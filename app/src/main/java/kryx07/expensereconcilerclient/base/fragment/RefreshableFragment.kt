@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kryx07.expensereconcilerclient.R
-import kryx07.expensereconcilerclient.events.HideRefresher
+import kryx07.expensereconcilerclient.events.HideRefresherEvent
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import timber.log.Timber
@@ -45,7 +45,7 @@ abstract class RefreshableFragment() : Fragment() {
     }
 
     @Subscribe
-    fun hideRefresher(hideRefresher: HideRefresher) {
+    fun hideRefresher(hideRefresherEvent: HideRefresherEvent) {
         this.swipeRefresher.isRefreshing = false
     }
 

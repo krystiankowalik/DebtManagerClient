@@ -2,6 +2,7 @@ package kryx07.expensereconcilerclient.ui.transactions
 
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
+import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -13,19 +14,23 @@ import kotlinx.android.synthetic.main.fragment_transactions.view.*
 import kryx07.expensereconcilerclient.App
 import kryx07.expensereconcilerclient.R
 import kryx07.expensereconcilerclient.base.fragment.RefreshableFragment
+import kryx07.expensereconcilerclient.events.HideProgressEvent
+import kryx07.expensereconcilerclient.events.HideRefresherEvent
+import kryx07.expensereconcilerclient.events.ReplaceFragmentEvent
+import kryx07.expensereconcilerclient.events.ShowProgressEvent
 import kryx07.expensereconcilerclient.model.transactions.Transaction
 import kryx07.expensereconcilerclient.ui.DashboardActivity
 import kryx07.expensereconcilerclient.ui.transactions.detail.TransactionDetailFragment
-import kryx07.expensereconcilerclient.utils.ViewUtilities
+import org.greenrobot.eventbus.EventBus
 import timber.log.Timber
 import javax.inject.Inject
 
 
 class TransactionsFragment : RefreshableFragment(), TransactionsMvpView {
 
-
     @Inject lateinit var presenter: TransactionsPresenter
     lateinit var adapter: TransactionsAdapter
+    @Inject lateinit var eventBus: EventBus
 
     @JvmField
     @BindView(R.id.fab)
@@ -82,27 +87,22 @@ class TransactionsFragment : RefreshableFragment(), TransactionsMvpView {
         Toast.makeText(context, context.getString(int), Toast.LENGTH_LONG).show()
     }
 
+    private fun setupFab() {
 
-    fun setupFab() {
-
-//      /*  (activity as DashboardActivity).showFragment(TransactionDetailFragment())
-
-        val newFragment = TransactionDetailFragment()
         floatingActionButton?.setOnClickListener {
-            ViewUtilities.showFragment(
-                    activity.supportFragmentManager,
-                    newFragment,
-                    newFragment::class.java.toString(),
-                    this@TransactionsFragment::class.java.toString()
-            )
-
-
-            /*val ft = fragmentManager.beginTransaction()
-            ft.replace(R.id.fragment_container, TransactionDetailFragment(), javaClass.name)
-            ft.commit()*/
-            //Toast.makeText(activity.applicationContext, "To be implemented soon :)", Toast.LENGTH_SHORT).show()
-
+            showFragment(TransactionDetailFragment())
         }
+    }
+
+    private fun showFragment(fragment: Fragment) {
+        eventBus.post(ReplaceFragmentEvent(fragment, javaClass.toString()))
+    }
+
+    override fun showProgress() = EventBus.getDefault().post(ShowProgressEvent())
+
+
+    override fun hideProgress() {
+        EventBus.getDefault().post(HideProgressEvent())
     }
 
 

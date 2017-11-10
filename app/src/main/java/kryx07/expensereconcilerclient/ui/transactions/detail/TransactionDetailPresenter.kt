@@ -4,9 +4,9 @@ import android.content.Context
 import android.widget.Toast
 import kryx07.expensereconcilerclient.R
 import kryx07.expensereconcilerclient.base.presenter.BasePresenter
-import kryx07.expensereconcilerclient.events.HideProgress
-import kryx07.expensereconcilerclient.events.HideRefresher
-import kryx07.expensereconcilerclient.events.ShowProgress
+import kryx07.expensereconcilerclient.events.HideProgressEvent
+import kryx07.expensereconcilerclient.events.HideRefresherEvent
+import kryx07.expensereconcilerclient.events.ShowProgressEvent
 import kryx07.expensereconcilerclient.network.ApiClient
 import kryx07.expensereconcilerclient.ui.transactions.TransactionDetailMvpView
 import kryx07.expensereconcilerclient.utils.SharedPreferencesManager
@@ -25,13 +25,13 @@ class TransactionDetailPresenter @Inject constructor(var apiClient: ApiClient,
     }
 
     private fun showProgress() {
-        EventBus.getDefault().post(ShowProgress())
+        EventBus.getDefault().post(ShowProgressEvent())
 
     }
 
     private fun hideProgress() {
-        EventBus.getDefault().post(HideProgress())
-        EventBus.getDefault().post(HideRefresher())
+        EventBus.getDefault().post(HideProgressEvent())
+        EventBus.getDefault().post(HideRefresherEvent())
     }
 
     private fun showErrorMessage() {

@@ -8,7 +8,6 @@ import kryx07.expensereconcilerclient.base.presenter.BasePresenter
 import kryx07.expensereconcilerclient.model.transactions.Transaction
 import kryx07.expensereconcilerclient.network.ApiClient
 import kryx07.expensereconcilerclient.utils.SharedPreferencesManager
-import kryx07.expensereconcilerclient.utils.ViewUtilities
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -22,7 +21,8 @@ class TransactionsPresenter @Inject constructor(private var apiClient: ApiClient
     }
 
     fun requestTransactions() {
-        ViewUtilities.showProgress()
+        view.showProgress()
+
 
         Timber.d(sharedPrefs.read(context.getString(R.string.my_user)))
 
@@ -34,7 +34,7 @@ class TransactionsPresenter @Inject constructor(private var apiClient: ApiClient
                     handleSuccessfulApiRequest(transactions)
                 }, { error ->
                     handleFailedApiRequest(error)
-                    ViewUtilities.hideProgress()
+                    view.hideProgress()
                     Timber.e(error.message)
                 }
                 )
@@ -45,14 +45,14 @@ class TransactionsPresenter @Inject constructor(private var apiClient: ApiClient
     }
 
     private fun handleFailedApiRequest(error: Throwable) {
-        ViewUtilities.hideProgress()
+        view.hideProgress()
         Timber.e(error.message)
         view.showToastAndLog(R.string.fetching_error)
     }
 
     private fun updateData(transactions: List<Transaction>) {
         view.updateData(transactions)
-        ViewUtilities.hideProgress()
+        view.hideProgress()
     }
 
 

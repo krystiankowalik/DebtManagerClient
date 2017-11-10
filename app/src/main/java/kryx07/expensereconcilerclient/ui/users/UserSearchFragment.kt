@@ -10,10 +10,13 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_user_search_view.view.*
 import kryx07.expensereconcilerclient.App
 import kryx07.expensereconcilerclient.R
+import kryx07.expensereconcilerclient.events.HideProgressEvent
+import kryx07.expensereconcilerclient.events.HideRefresherEvent
+import kryx07.expensereconcilerclient.events.ShowProgressEvent
 import kryx07.expensereconcilerclient.model.users.User
 import kryx07.expensereconcilerclient.network.ApiClient
 import kryx07.expensereconcilerclient.ui.DashboardActivity
-import kryx07.expensereconcilerclient.utils.ViewUtilities
+import org.greenrobot.eventbus.EventBus
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -22,11 +25,12 @@ class UserSearchFragment : Fragment(), SearchView.OnQueryTextListener, UserSearc
 
 
     @Inject lateinit var presenter: UserSearchPresenter
+    @Inject lateinit var apiClient: ApiClient
+    @Inject lateinit var eventBus: EventBus
+
     lateinit var adapter: UsersAdapter
 
-    @Inject lateinit var apiClient: ApiClient
-
-    val usersList = arrayListOf<User>()
+    private val usersList = arrayListOf<User>()
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 
@@ -65,15 +69,16 @@ class UserSearchFragment : Fragment(), SearchView.OnQueryTextListener, UserSearc
         when (item.itemId) {
             android.R.id.home -> {
                 Timber.e("Pushed")
-                ViewUtilities.showPreviousFragment(activity.supportFragmentManager,this)
+                //ViewUtilities.showPreviousFragment(activity.supportFragmentManager,this)
+                activity.onBackPressed()
             }
         }
         return super.onOptionsItemSelected(item)
     }
 
-    fun requestUsers() {
+    private fun requestUsers() {
 
-        ViewUtilities.showProgress()
+        showProgress()
 
         apiClient.service.allUsers
                 .subscribeOn(Schedulers.io())
@@ -96,7 +101,7 @@ class UserSearchFragment : Fragment(), SearchView.OnQueryTextListener, UserSearc
 
     override fun updateData(users: List<User>) {
         adapter.updateData(users)
-        ViewUtilities.hideProgress()
+        hideProgress()
     }
 
     private fun filter(users: List<User>, query: String): List<User> {
@@ -110,13 +115,8 @@ class UserSearchFragment : Fragment(), SearchView.OnQueryTextListener, UserSearc
         return filteredUsers
     }
 
-    /* private fun toList(sortedList: SortedList<User>): List<User> {
-         return (0 until sortedList.size()).map { sortedList[it] }
-
-     }*/
-
     override fun onQueryTextSubmit(query: String): Boolean {
-        ViewUtilities.showProgress()
+        showProgress()
         var filteredList = filter(usersList, query)
         updateData(filteredList)
         return false
@@ -124,10 +124,21 @@ class UserSearchFragment : Fragment(), SearchView.OnQueryTextListener, UserSearc
 
 
     override fun onQueryTextChange(query: String): Boolean {
-        ViewUtilities.showProgress()
+        showProgress()
         val filteredList = filter(usersList, query)
         updateData(filteredList)
         return true
+    }
+
+
+    override fun showProgress() {
+        EventBus.getDefault().post(ShowProgressEvent())
+
+    }
+
+    override fun hideProgress() {
+        EventBus.getDefault().post(HideProgressEvent())
+        EventBus.getDefault().post(HideRefresherEvent())
     }
 
 

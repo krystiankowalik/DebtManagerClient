@@ -60,12 +60,12 @@ class PayablesPresenter @Inject constructor(var apiClient: ApiClient,
     }
 
     private fun showProgress() {
-        EventBus.getDefault().post(ShowProgress())
+        EventBus.getDefault().post(ShowProgressEvent())
     }
 
     private fun hideProgress() {
         EventBus.getDefault().post(HideProgress())
-        EventBus.getDefault().post(HideRefresher())
+        EventBus.getDefault().post(HideRefresherEvent())
     }
 
     private fun setTotals(allPayables: List<Payable>) {

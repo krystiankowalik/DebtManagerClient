@@ -1,3 +1,6 @@
 package kryx07.expensereconcilerclient.base.fragment
 
-interface MvpView
+interface MvpView{
+    fun showProgress()
+    fun hideProgress()
+}

@@ -2,6 +2,7 @@ package kryx07.expensereconcilerclient.ui.transactions.detail
 
 import android.app.DatePickerDialog
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -12,16 +13,19 @@ import kotlinx.android.synthetic.main.fragment_transaction_detail.*
 import kotlinx.android.synthetic.main.fragment_transaction_detail.view.*
 import kryx07.expensereconcilerclient.App
 import kryx07.expensereconcilerclient.R
+import kryx07.expensereconcilerclient.events.HideProgressEvent
+import kryx07.expensereconcilerclient.events.HideRefresherEvent
+import kryx07.expensereconcilerclient.events.ReplaceFragmentEvent
+import kryx07.expensereconcilerclient.events.ShowProgressEvent
 import kryx07.expensereconcilerclient.model.transactions.Transaction
 import kryx07.expensereconcilerclient.ui.DashboardActivity
 import kryx07.expensereconcilerclient.ui.transactions.TransactionDetailMvpView
 import kryx07.expensereconcilerclient.ui.transactions.TransactionsAdapter
 import kryx07.expensereconcilerclient.ui.users.UserSearchFragment
 import kryx07.expensereconcilerclient.utils.StringUtilities
-import kryx07.expensereconcilerclient.utils.ViewUtilities
+import org.greenrobot.eventbus.EventBus
 import org.joda.time.DateTime
 import org.joda.time.chrono.GregorianChronology
-import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -29,7 +33,8 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
 
 
     @Inject lateinit var presenter: TransactionDetailPresenter
-    lateinit var adapter: TransactionsAdapter
+    private lateinit var adapter: TransactionsAdapter
+    @Inject lateinit var eventBus: EventBus
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
@@ -78,20 +83,8 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
 
     private fun setUsersSearchListeners(view: View) {
         view.payer_input.setOnClickListener({
-            Timber.e("I'm listening")
-
-            val newFragment = UserSearchFragment()
-            ViewUtilities.showFragment(
-                    activity.supportFragmentManager,
-                    newFragment,
-                    newFragment::class.java.toString(),
-                    this::class.java.toString()
-            )
-
-            /*fragmentManager
-                    .beginTransaction()
-                    .replace(R.id.fragment_container, UserSearchFragment(), javaClass.name)
-                    .commit()*/
+            showProgress()
+            showFragment(UserSearchFragment())
         })
     }
 
@@ -125,6 +118,17 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
 
     override fun updateData(transactions: List<Transaction>) {
         adapter.updateData(transactions)
+    }
+
+    private fun showFragment(fragment: Fragment) {
+        eventBus.post(ReplaceFragmentEvent(fragment, javaClass.toString()))
+    }
+
+    override fun showProgress() = EventBus.getDefault().post(ShowProgressEvent())
+
+    override fun hideProgress() {
+        EventBus.getDefault().post(HideProgressEvent())
+        EventBus.getDefault().post(HideRefresherEvent())
     }
 
 }

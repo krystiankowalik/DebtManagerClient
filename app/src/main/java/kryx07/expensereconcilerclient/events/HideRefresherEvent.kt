@@ -1,4 +1,4 @@
 package kryx07.expensereconcilerclient.events
 
-class HideRefresher {
+class HideRefresherEvent {
 }
