@@ -1,13 +1,13 @@
 package kryx07.expensereconcilerclient.ui
 
-//import kryx07.expensereconcilerclient.ui.payables.PayablesFragment
 import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.view.Gravity
 import android.view.View
 import butterknife.ButterKnife
 import io.objectbox.BoxStore
@@ -18,6 +18,7 @@ import kryx07.expensereconcilerclient.events.HideProgress
 import kryx07.expensereconcilerclient.events.ShowProgress
 import kryx07.expensereconcilerclient.ui.transactions.TransactionsFragment
 import kryx07.expensereconcilerclient.utils.SharedPreferencesManager
+import kryx07.expensereconcilerclient.utils.ViewUtilities
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import javax.inject.Inject
@@ -32,64 +33,32 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
         setContentView(R.layout.activity_dashboard)
         ButterKnife.bind(this)
         EventBus.getDefault().register(this)
-
-        setupDrawerAndToolbar()
-        if (savedInstanceState == null) {
-            showFragment(TransactionsFragment())
-        }
+        dashboard_progress.indeterminateDrawable.setColorFilter(Color.GRAY, android.graphics.PorterDuff.Mode.SRC_IN)
 
         App.appComponent.inject(this)
+
+        setupActionBar()
+        setupNavigationDrawer()
+
+        //setupDrawerAndActionBar()
+        if (savedInstanceState == null) {
+            val newFragment = TransactionsFragment()
+            ViewUtilities.showFragment(supportFragmentManager, newFragment, newFragment.javaClass.toString(), this.toString())
+        }
 
         //to be replaced with login!!!
         sharedPreferencesManager.write(getString(R.string.my_user), "2")
 
-        dashboard_progress.indeterminateDrawable.setColorFilter(Color.GRAY, android.graphics.PorterDuff.Mode.SRC_IN)
 
-       test()
     }
 
-    fun test() {
-
-        /*val userStore = boxStore.boxFor<User>(User::class.java)
-        userStore.put(User(0, "dupa", "dupa2"))
-        userStore.query().build().find().forEach({ u -> Timber.e(u.toString()) })*/
-
-/*
-
-        database.userDao().getAll().forEach({ u -> Timber.e(u.toString()) })
-        var group1: Group = Group(1, "group")
-        var group2: Group = Group(2, "group2")
-
-        database.groupDao().insert(group1)
-        database.groupDao().insert(group2)
-
-        var user1: User = User(1, "myuser", "password", 1)
-        var user2: User = User(2, "myuser2", "password2", 1)
-        database.userDao().insert(user1)
-        database.userDao().insert(user2)
-
-        database.groupDao().getAll().forEach({ group -> Timber.e(group.toString()) })
-
-        database.groupDao().getAllGroupsWithUsers().forEach({ gwu -> Timber.e(gwu.toString()) })
-*/
-
-        /* var usersGroups1 = UsersGroups(1, user1.id, group1.id)
-         var usersGroups2 = UsersGroups(2, user2.id, group2.id)
-
-         database.usersGroupsDao().insert(usersGroups1)
-         database.usersGroupsDao().insert(usersGroups2)
-
-         database.groupDao().getAll().forEach({ g -> Timber.e(g.toString()) })
-
-         database.userDao().getAllGroups().groupIdsList.forEach({ id -> Timber.e(id.toString()) })*/
-    }
 
     override fun onDestroy() {
         EventBus.getDefault().unregister(this)
         super.onDestroy()
     }
 
-    private fun setupDrawerAndToolbar() {
+    private fun setupActionBar() {
         setSupportActionBar(dashboard_toolbar)
         val toggle = ActionBarDrawerToggle(
                 this, dashboard_drawer, dashboard_toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
@@ -97,11 +66,18 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
         dashboard_drawer.addDrawerListener(toggle)
         // Sync state to have a hamburger menu icon
         toggle.syncState()
+    }
 
+    private fun setupNavigationDrawer() {
         dashboard_nav.setNavigationItemSelectedListener(NavigationView.OnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.menu_transactions -> {
-                    showFragment(TransactionsFragment())
+                    /*supportFragmentManager.inTransaction {
+                        add(R.id.fragment_container, TransactionsFragment(), TransactionsFragment::class.java.toString())
+                        addToBackStack(this@DashboardActivity::class.java.toString())
+                    }*/
+                    val newFragment = TransactionsFragment()
+                    ViewUtilities.showFragment(supportFragmentManager, newFragment, newFragment.javaClass.toString(), this.toString())
                     return@OnNavigationItemSelectedListener true
                 }
             /*R.id.menu_payables -> {
@@ -111,6 +87,12 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
             }
             false
         })
+    }
+
+    private fun getVisibleFragment(): Fragment? {
+        val fragmentManager = supportFragmentManager
+        val fragments = fragmentManager.fragments
+        return fragments.firstOrNull { it != null && it.isVisible }
     }
 
     @Subscribe
@@ -125,23 +107,61 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
         dashboard_progress.visibility = View.GONE
     }
 
-        fun showFragment(fragment: Fragment) {
-            val tag = fragment.javaClass.name
-            val manager = supportFragmentManager
+    /*  override fun onBackPressed() {
+          if (fragmentManager.backStackEntryCount == 0) {
+              super.onBackPressed()
+          } else if (fragmentManager.backStackEntryCount == 1) {
+              moveTaskToBack(false)
+          } else {
+              fragmentManager.popBackStack()
+          }
+      }*/
 
-            if (manager.findFragmentByTag(tag) == null) {
-                // This fragment does not lie on back stack, need to be added
-                manager.beginTransaction()
-                        // Add a tag to prevent duplicating insertions of the same fragment
-                        .replace(R.id.fragment_container, fragment, tag)
-                        .addToBackStack(tag)
-                        .commit()
-            } else {
-                // Get the fragment from the back stack
-                manager.popBackStackImmediate(tag, 0)
-            }
-            dashboard_drawer.closeDrawer(Gravity.START)
+    /*fun showFragment(fragment: Fragment) {
+        val tag = fragment.javaClass.name
+        val manager = supportFragmentManager
+
+        if (manager.findFragmentByTag(tag) == null) {
+            // This fragment does not lie on back stack, need to be added
+            manager.beginTransaction()
+                    // Add a tag to prevent duplicating insertions of the same fragment
+                    .replace(R.id.fragment_container, fragment, tag)
+                    .addToBackStack(tag)
+                    .commit()
+        } else {
+            // Get the fragment from the back stack
+            manager.popBackStackImmediate(tag, 0)
         }
+        dashboard_drawer.closeDrawer(Gravity.START)
+    }*/
+
+
+    fun showFragment(supportFragmentManager: FragmentManager, fragment: Fragment, fragmentTag: String, transactionTag: String) {
+
+        if (supportFragmentManager.findFragmentByTag(fragmentTag) == null) {
+            // This fragment does not lie on back stack, need to be added
+            supportFragmentManager.beginTransaction()
+                    // Add a tag to prevent duplicating insertions of the same fragment
+                    .replace(R.id.fragment_container, fragment, fragmentTag)
+                    .addToBackStack(transactionTag)
+                    .commit()
+        } else {
+            // Get the fragment from the back stack
+            supportFragmentManager.popBackStackImmediate(transactionTag, 0)
+        }
+    }
+
+    inline fun FragmentManager.inTransaction(func: FragmentTransaction.() -> FragmentTransaction) =
+            beginTransaction().func().commit()
+
+    fun AppCompatActivity.addFragment(fragment: Fragment, frameId: Int) {
+        supportFragmentManager.inTransaction { add(frameId, fragment) }
+    }
+
+
+    fun AppCompatActivity.replaceFragment(fragment: Fragment, frameId: Int) {
+        supportFragmentManager.inTransaction { replace(frameId, fragment) }
+    }
 
 
 }

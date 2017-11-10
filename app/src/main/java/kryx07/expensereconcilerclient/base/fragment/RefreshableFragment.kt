@@ -1,4 +1,4 @@
-package kryx07.expensereconcilerclient.base
+package kryx07.expensereconcilerclient.base.fragment
 
 import android.os.Bundle
 import android.support.v4.app.Fragment

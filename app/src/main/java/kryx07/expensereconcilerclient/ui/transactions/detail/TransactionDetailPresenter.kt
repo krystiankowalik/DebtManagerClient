@@ -3,7 +3,7 @@ package kryx07.expensereconcilerclient.ui.transactions.detail
 import android.content.Context
 import android.widget.Toast
 import kryx07.expensereconcilerclient.R
-import kryx07.expensereconcilerclient.base.BasePresenter
+import kryx07.expensereconcilerclient.base.presenter.BasePresenter
 import kryx07.expensereconcilerclient.events.HideProgress
 import kryx07.expensereconcilerclient.events.HideRefresher
 import kryx07.expensereconcilerclient.events.ShowProgress

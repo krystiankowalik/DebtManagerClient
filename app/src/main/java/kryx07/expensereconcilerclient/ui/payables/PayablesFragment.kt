@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.fragment_payables.*
 import kotlinx.android.synthetic.main.fragment_payables.view.*
 import kryx07.expensereconcilerclient.App
 import kryx07.expensereconcilerclient.R
-import kryx07.expensereconcilerclient.base.RefreshableFragment
+import kryx07.expensereconcilerclient.base.fragment.RefreshableFragment
 import kryx07.expensereconcilerclient.model.transactions.Payable
 import kryx07.expensereconcilerclient.ui.DashboardActivity
 import kryx07.expensereconcilerclient.ui.transactions.*

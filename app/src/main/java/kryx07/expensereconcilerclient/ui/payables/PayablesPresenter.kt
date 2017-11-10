@@ -4,7 +4,7 @@ package kryx07.expensereconcilerclient.ui.payables
 import android.content.Context
 import android.widget.Toast
 import kryx07.expensereconcilerclient.R
-import kryx07.expensereconcilerclient.base.BasePresenter
+import kryx07.expensereconcilerclient.base.presenter.BasePresenter
 import kryx07.expensereconcilerclient.db.MyDatabase
 import kryx07.expensereconcilerclient.events.HideProgress
 import kryx07.expensereconcilerclient.events.HideRefresher
@@ -51,7 +51,7 @@ class PayablesPresenter @Inject constructor(var apiClient: ApiClient,
             }
 
             override fun onFailure(call: Call<Payables>?, t: Throwable?) {
-                showErrorMessage()
+                showToastAndLog()
                 hideProgress()
             }
 
@@ -86,7 +86,7 @@ class PayablesPresenter @Inject constructor(var apiClient: ApiClient,
         view.updateTotals(myReceivables, myPayables)
     }
 
-    private fun showErrorMessage() {
+    private fun showToastAndLog() {
         Timber.e(context.getString(R.string.fetching_error))
         Toast.makeText(context, context.getString(R.string.fetching_error), Toast.LENGTH_LONG).show()
     }

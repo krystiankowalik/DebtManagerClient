@@ -1,6 +1,6 @@
-package kryx07.expensereconcilerclient.base
+package kryx07.expensereconcilerclient.base.presenter
 
-import timber.log.Timber
+import kryx07.expensereconcilerclient.base.fragment.MvpView
 import java.lang.ref.WeakReference
 
 abstract class BasePresenter<T : MvpView> : MvpPresenter<T> {

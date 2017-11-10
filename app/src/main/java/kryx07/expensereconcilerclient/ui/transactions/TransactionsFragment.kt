@@ -6,15 +6,18 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import butterknife.BindView
 import butterknife.ButterKnife
 import kotlinx.android.synthetic.main.fragment_transactions.view.*
 import kryx07.expensereconcilerclient.App
 import kryx07.expensereconcilerclient.R
-import kryx07.expensereconcilerclient.base.RefreshableFragment
+import kryx07.expensereconcilerclient.base.fragment.RefreshableFragment
 import kryx07.expensereconcilerclient.model.transactions.Transaction
 import kryx07.expensereconcilerclient.ui.DashboardActivity
 import kryx07.expensereconcilerclient.ui.transactions.detail.TransactionDetailFragment
+import kryx07.expensereconcilerclient.utils.ViewUtilities
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -45,9 +48,9 @@ class TransactionsFragment : RefreshableFragment(), TransactionsMvpView {
 
         (activity as DashboardActivity).supportActionBar?.setTitle(R.string.transactions)
 
-       /* val ft = fragmentManager.beginTransaction()
-        ft.replace(R.id.fragment_container, TransactionDetailFragment(), javaClass.name)
-        ft.commit()*/
+        /* val ft = fragmentManager.beginTransaction()
+         ft.replace(R.id.fragment_container, TransactionDetailFragment(), javaClass.name)
+         ft.commit()*/
         return view
     }
 
@@ -69,15 +72,34 @@ class TransactionsFragment : RefreshableFragment(), TransactionsMvpView {
         presenter.requestTransactions()
     }
 
+    override fun showToastAndLog(string: String) {
+        Timber.e(string)
+        Toast.makeText(context, string, Toast.LENGTH_LONG).show()
+    }
+
+    override fun showToastAndLog(int: Int) {
+        Timber.e(context.getString(int))
+        Toast.makeText(context, context.getString(int), Toast.LENGTH_LONG).show()
+    }
+
 
     fun setupFab() {
 
 //      /*  (activity as DashboardActivity).showFragment(TransactionDetailFragment())
 
+        val newFragment = TransactionDetailFragment()
         floatingActionButton?.setOnClickListener {
-            val ft = fragmentManager.beginTransaction()
+            ViewUtilities.showFragment(
+                    activity.supportFragmentManager,
+                    newFragment,
+                    newFragment::class.java.toString(),
+                    this@TransactionsFragment::class.java.toString()
+            )
+
+
+            /*val ft = fragmentManager.beginTransaction()
             ft.replace(R.id.fragment_container, TransactionDetailFragment(), javaClass.name)
-            ft.commit()
+            ft.commit()*/
             //Toast.makeText(activity.applicationContext, "To be implemented soon :)", Toast.LENGTH_SHORT).show()
 
         }
