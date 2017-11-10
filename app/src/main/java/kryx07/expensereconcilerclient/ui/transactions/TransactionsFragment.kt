@@ -10,16 +10,13 @@ import android.view.ViewGroup
 import android.widget.Toast
 import butterknife.BindView
 import butterknife.ButterKnife
+import butterknife.OnClick
 import kotlinx.android.synthetic.main.fragment_transactions.view.*
 import kryx07.expensereconcilerclient.App
 import kryx07.expensereconcilerclient.R
 import kryx07.expensereconcilerclient.base.fragment.RefreshableFragment
-import kryx07.expensereconcilerclient.events.HideProgressEvent
-import kryx07.expensereconcilerclient.events.HideRefresherEvent
-import kryx07.expensereconcilerclient.events.ReplaceFragmentEvent
-import kryx07.expensereconcilerclient.events.ShowProgressEvent
+import kryx07.expensereconcilerclient.events.*
 import kryx07.expensereconcilerclient.model.transactions.Transaction
-import kryx07.expensereconcilerclient.ui.DashboardActivity
 import kryx07.expensereconcilerclient.ui.transactions.detail.TransactionDetailFragment
 import org.greenrobot.eventbus.EventBus
 import timber.log.Timber
@@ -42,21 +39,22 @@ class TransactionsFragment : RefreshableFragment(), TransactionsMvpView {
         super.onCreateView(inflater, view.transactions_swipe_refresher, savedInstanceState)
         ButterKnife.bind(this, view)
         App.appComponent.inject(this)
-        setupFab()
 
         //Adapter setup
-        adapter = TransactionsAdapter()
-        view.transactions_recycler.layoutManager = LinearLayoutManager(context)
-        view.transactions_recycler.adapter = adapter
+        setupAdapter(view)
 
         presenter.attachView(this)
 
-        (activity as DashboardActivity).supportActionBar?.setTitle(R.string.transactions)
+        //(activity as DashboardActivity).supportActionBar?.setTitle(R.string.transactions)
+        eventBus.post(SetActivityTitleEvent(getString(R.string.transactions)))
 
-        /* val ft = fragmentManager.beginTransaction()
-         ft.replace(R.id.fragment_container, TransactionDetailFragment(), javaClass.name)
-         ft.commit()*/
         return view
+    }
+
+    private fun setupAdapter(view: View) {
+        adapter = TransactionsAdapter()
+        view.transactions_recycler.layoutManager = LinearLayoutManager(context)
+        view.transactions_recycler.adapter = adapter
     }
 
     override fun onStart() {
@@ -69,12 +67,21 @@ class TransactionsFragment : RefreshableFragment(), TransactionsMvpView {
         super.onDestroyView()
     }
 
-    override fun updateData(transactions: List<Transaction>) {
-        adapter.updateData(transactions)
+    override fun updateData(transactions: List<Transaction>) = adapter.updateData(transactions)
+
+    override fun onRefresh() = presenter.requestTransactions()
+
+    @OnClick(R.id.fab)
+    fun addTransactionClick() {
+        showProgress()
+        showFragment(TransactionDetailFragment())
     }
 
-    override fun onRefresh() {
-        presenter.requestTransactions()
+    private fun showFragment(fragment: Fragment) = eventBus.post(ReplaceFragmentEvent(fragment, javaClass.toString()))
+    override fun showProgress() = EventBus.getDefault().post(ShowProgressEvent())
+    override fun hideProgress() {
+        EventBus.getDefault().post(HideProgressEvent())
+        EventBus.getDefault().post(HideRefresherEvent())
     }
 
     override fun showToastAndLog(string: String) {
@@ -86,25 +93,5 @@ class TransactionsFragment : RefreshableFragment(), TransactionsMvpView {
         Timber.e(context.getString(int))
         Toast.makeText(context, context.getString(int), Toast.LENGTH_LONG).show()
     }
-
-    private fun setupFab() {
-
-        floatingActionButton?.setOnClickListener {
-            showFragment(TransactionDetailFragment())
-        }
-    }
-
-    private fun showFragment(fragment: Fragment) {
-        eventBus.post(ReplaceFragmentEvent(fragment, javaClass.toString()))
-    }
-
-    override fun showProgress() = EventBus.getDefault().post(ShowProgressEvent())
-
-
-    override fun hideProgress() {
-        EventBus.getDefault().post(HideProgressEvent())
-    }
-
-
 }
 

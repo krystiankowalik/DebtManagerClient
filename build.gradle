@@ -3,7 +3,8 @@
 buildscript {
     ext.objectboxVersion = '1.2.0-RC'
     ext.kotlin_version = '1.1.51'
-    ext.app_compat_version= '26.1.0'
+    ext.butterknife_version = '8.8.1'
+    ext.app_compat_version = '26.1.0'
 
     repositories {
         maven { url 'https://maven.google.com' }
@@ -29,6 +30,7 @@ allprojects {
         maven { url "https://jitpack.io" }
         maven { url 'https://maven.google.com' }
         maven { url "http://objectbox.net/beta-repo/" }
+        maven { url 'http://host:port/nexus/content/repositories/releases' }
     }
 }
 

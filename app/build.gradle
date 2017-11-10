@@ -49,13 +49,17 @@ dependencies {
     compile "com.android.support:design:$app_compat_version"
 
 //butterknife
-    compile 'com.jakewharton:butterknife:8.6.0'
+  /*  compile 'com.jakewharton:butterknife:8.6.0'
     kapt 'com.jakewharton:butterknife:8.6.0'
 
 
 
-    kapt 'com.jakewharton:butterknife-compiler:8.6.0'
+    kapt 'com.jakewharton:butterknife-compiler:8.6.0'*/
+ //   compile 'com.github.tinsukE:kotterknife:'
+    compile "com.jakewharton:butterknife:$butterknife_version"
+    kapt "com.jakewharton:butterknife-compiler:$butterknife_version"
 
+    //compile 'com.github.tinsukE:kotterknife:'
     //compile "com.google.dagger:dagger:2.9"
     compile 'com.google.dagger:dagger:2.4'
     kapt 'com.google.dagger:dagger-compiler:2.4'

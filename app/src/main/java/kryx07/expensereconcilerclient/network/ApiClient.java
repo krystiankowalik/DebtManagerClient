@@ -1,7 +1,5 @@
 package kryx07.expensereconcilerclient.network;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -10,25 +8,17 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
-import java.text.DateFormat;
 import java.util.concurrent.TimeUnit;
 
 import kryx07.expensereconcilerclient.BuildConfig;
 import kryx07.expensereconcilerclient.utils.SharedPreferencesManager;
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import timber.log.Timber;
 
 public class ApiClient {
 
@@ -77,7 +67,7 @@ public class ApiClient {
         clientBuilder.writeTimeout(1, TimeUnit.MINUTES);
         clientBuilder.readTimeout(1, TimeUnit.MINUTES);
 
-        //Use dates in the required format
+        //Use dates in the kryx07.expensereconcilerclient.utils.required format
         /*Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd").create();*/
 

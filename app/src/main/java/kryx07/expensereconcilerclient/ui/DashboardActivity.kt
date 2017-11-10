@@ -14,10 +14,7 @@ import io.objectbox.BoxStore
 import kotlinx.android.synthetic.main.activity_dashboard.*
 import kryx07.expensereconcilerclient.App
 import kryx07.expensereconcilerclient.R
-import kryx07.expensereconcilerclient.events.AddFragmentEvent
-import kryx07.expensereconcilerclient.events.HideProgressEvent
-import kryx07.expensereconcilerclient.events.ReplaceFragmentEvent
-import kryx07.expensereconcilerclient.events.ShowProgressEvent
+import kryx07.expensereconcilerclient.events.*
 import kryx07.expensereconcilerclient.ui.transactions.TransactionsFragment
 import kryx07.expensereconcilerclient.utils.SharedPreferencesManager
 import org.greenrobot.eventbus.EventBus
@@ -53,7 +50,6 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
 
     }
 
-
     override fun onDestroy() {
         EventBus.getDefault().unregister(this)
         super.onDestroy()
@@ -68,6 +64,7 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
         // Sync state to have a hamburger menu icon
         toggle.syncState()
     }
+
 
     private fun setupNavigationDrawer() {
         dashboard_nav.setNavigationItemSelectedListener(NavigationView.OnNavigationItemSelectedListener { item ->
@@ -112,7 +109,7 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
 
 
     @Subscribe
-    fun addFragment(addFragmentEvent: AddFragmentEvent) {
+    fun onAddFragmentEvent(addFragmentEvent: AddFragmentEvent) {
         supportFragmentManager.inTransaction {
             add(R.id.fragment_container,
                     addFragmentEvent.fragment,
@@ -122,13 +119,18 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
     }
 
     @Subscribe
-    fun replaceFragment(replaceFragmentEvent: ReplaceFragmentEvent) {
+    fun onReplaceFragmentEvent(replaceFragmentEvent: ReplaceFragmentEvent) {
         supportFragmentManager.inTransaction {
             replace(R.id.fragment_container,
                     replaceFragmentEvent.fragment,
                     replaceFragmentEvent.fragment.javaClass.toString())
                     .addToBackStack(replaceFragmentEvent.tag)
         }
+    }
+
+    @Subscribe
+    fun onSetActivityTitle(setActivityTitleEvent: SetActivityTitleEvent) {
+        supportActionBar?.title = setActivityTitleEvent.title
     }
 
 

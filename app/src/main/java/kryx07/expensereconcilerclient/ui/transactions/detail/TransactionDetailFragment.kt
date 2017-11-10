@@ -14,8 +14,8 @@ import kotlinx.android.synthetic.main.fragment_transaction_detail.view.*
 import kryx07.expensereconcilerclient.App
 import kryx07.expensereconcilerclient.R
 import kryx07.expensereconcilerclient.events.HideProgressEvent
-import kryx07.expensereconcilerclient.events.HideRefresherEvent
 import kryx07.expensereconcilerclient.events.ReplaceFragmentEvent
+import kryx07.expensereconcilerclient.events.SetActivityTitleEvent
 import kryx07.expensereconcilerclient.events.ShowProgressEvent
 import kryx07.expensereconcilerclient.model.transactions.Transaction
 import kryx07.expensereconcilerclient.ui.DashboardActivity
@@ -46,17 +46,19 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
         setDateInputListeners(view)
         setUsersSearchListeners(view)
 
-        val supportActionBar = (activity as DashboardActivity).supportActionBar
-        if (supportActionBar != null) {
+        //val supportActionBar = (activity as DashboardActivity).supportActionBar
+        /*if (supportActionBar != null) {
             supportActionBar.setTitle(R.string.transactions)
 //            supportActionBar.setHomeButtonEnabled(true)
             supportActionBar.setDisplayHomeAsUpEnabled(true)
-        }
+        }*/
+
+        eventBus.post(SetActivityTitleEvent(getString(R.string.transaction_detail)))
 
         val toolbar = (activity as DashboardActivity).dashboard_toolbar
         //toolbar.
 
-
+        hideProgress()
         return view
 
     }
@@ -126,10 +128,8 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
 
     override fun showProgress() = EventBus.getDefault().post(ShowProgressEvent())
 
-    override fun hideProgress() {
-        EventBus.getDefault().post(HideProgressEvent())
-        EventBus.getDefault().post(HideRefresherEvent())
-    }
+    override fun hideProgress() = EventBus.getDefault().post(HideProgressEvent())
+
 
 }
 
