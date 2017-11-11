@@ -7,7 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.DatePicker
-import kotlinx.android.synthetic.main.activity_dashboard.*
+import butterknife.ButterKnife
+import butterknife.OnClick
 import kotlinx.android.synthetic.main.fragment_transaction_detail.*
 import kotlinx.android.synthetic.main.fragment_transaction_detail.view.*
 import kryx07.expensereconcilerclient.App
@@ -16,15 +17,12 @@ import kryx07.expensereconcilerclient.events.HideProgressEvent
 import kryx07.expensereconcilerclient.events.ReplaceFragmentEvent
 import kryx07.expensereconcilerclient.events.SetActivityTitleEvent
 import kryx07.expensereconcilerclient.events.ShowProgressEvent
-import kryx07.expensereconcilerclient.model.transactions.Transaction
-import kryx07.expensereconcilerclient.ui.DashboardActivity
 import kryx07.expensereconcilerclient.ui.transactions.TransactionDetailMvpView
 import kryx07.expensereconcilerclient.ui.transactions.TransactionsAdapter
 import kryx07.expensereconcilerclient.ui.users.UserSearchFragment
 import kryx07.expensereconcilerclient.utils.StringUtilities
 import org.greenrobot.eventbus.EventBus
 import org.joda.time.DateTime
-import org.joda.time.chrono.GregorianChronology
 import javax.inject.Inject
 
 
@@ -39,64 +37,46 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
 
         val view = inflater!!.inflate(R.layout.fragment_transaction_detail, container, false)
         App.appComponent.inject(this)
-
+        ButterKnife.bind(this, view)
         presenter.attachView(this)
 
-        setDateInputListeners(view)
-        setUsersSearchListeners(view)
-
-        //val supportActionBar = (activity as DashboardActivity).supportActionBar
-        /*if (supportActionBar != null) {
-            supportActionBar.setTitle(R.string.transactions)
-//            supportActionBar.setHomeButtonEnabled(true)
-            supportActionBar.setDisplayHomeAsUpEnabled(true)
-        }*/
 
         eventBus.post(SetActivityTitleEvent(getString(R.string.transaction_detail)))
 
-        val toolbar = (activity as DashboardActivity).dashboard_toolbar
-        //toolbar.
-
-        hideProgress()
         return view
 
     }
 
-
-
-
-    private fun setDateInputListeners(view: View) {
-        view.date_input.setText(StringUtilities.formatDate(DateTime.now()))
-
-        view.date_input.setOnClickListener({
-            showCalendar()
-        })
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        initDate(view)
+        hideProgress()
+        super.onViewCreated(view, savedInstanceState)
     }
 
-    private fun setUsersSearchListeners(view: View) {
-        view.payer_input.setOnClickListener({
-            showProgress()
-            showFragment(UserSearchFragment())
-        })
+    private fun initDate(view: View) =
+            view.date_input.setText(StringUtilities.formatDate(DateTime.now()))
+
+
+    @OnClick(R.id.date_input)
+    fun onDateClick() = showCalendar()
+
+
+    @OnClick(R.id.payer_input)
+    fun onPayerClick(){
+        showProgress()
+        showFragment(UserSearchFragment())
     }
 
     private fun showCalendar() {
-        val date = try {
-            DateTime.parse(date_input.text.toString())
-        } catch (e: IllegalArgumentException) {
-            DateTime.now()
-        }
-        DatePickerDialog(context, this, date.year, date.monthOfYear - 1, date.dayOfMonth)
+        val date = presenter.parseGregorianDate(date_input.text.toString())
+        DatePickerDialog(context, this, date.year, date.monthOfYear, date.dayOfMonth)
                 .show()
     }
 
-    override fun onDateSet(p0: DatePicker?, year: Int, month: Int, day: Int) =
+    override fun onDateSet(p0: DatePicker, year: Int, month: Int, day: Int) =
             date_input
                     .setText(StringUtilities
-                            .formatDate(
-                                    DateTime(GregorianChronology
-                                            .getInstance())
-                                            .withDate(year, month + 1, day)))
+                            .formatDate(presenter.getDateOf(year,month,day)))
 
     override fun onStart() {
         super.onStart()
@@ -108,13 +88,7 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
         super.onDestroyView()
     }
 
-    override fun updateData(transactions: List<Transaction>) {
-        adapter.updateData(transactions)
-    }
-
-    private fun showFragment(fragment: Fragment) {
-        eventBus.post(ReplaceFragmentEvent(fragment, javaClass.toString()))
-    }
+    private fun showFragment(fragment: Fragment) = eventBus.post(ReplaceFragmentEvent(fragment))
 
     override fun showProgress() = EventBus.getDefault().post(ShowProgressEvent())
 

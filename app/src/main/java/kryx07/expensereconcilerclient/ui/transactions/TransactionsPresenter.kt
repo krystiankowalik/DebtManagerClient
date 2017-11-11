@@ -23,7 +23,6 @@ class TransactionsPresenter @Inject constructor(private var apiClient: ApiClient
     fun requestTransactions() {
         view.showProgress()
 
-
         Timber.d(sharedPrefs.read(context.getString(R.string.my_user)))
 
         apiClient.service
@@ -47,7 +46,7 @@ class TransactionsPresenter @Inject constructor(private var apiClient: ApiClient
     private fun handleFailedApiRequest(error: Throwable) {
         view.hideProgress()
         Timber.e(error.message)
-        view.showToastAndLog(R.string.fetching_error)
+        view.showSnackAndLog(R.string.fetching_error)
     }
 
     private fun updateData(transactions: List<Transaction>) {

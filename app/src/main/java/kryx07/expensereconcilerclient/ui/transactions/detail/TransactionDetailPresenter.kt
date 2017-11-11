@@ -1,19 +1,13 @@
 package kryx07.expensereconcilerclient.ui.transactions.detail
 
 import android.content.Context
-import android.widget.Toast
-import kryx07.expensereconcilerclient.R
 import kryx07.expensereconcilerclient.base.presenter.BasePresenter
-import kryx07.expensereconcilerclient.events.HideProgressEvent
-import kryx07.expensereconcilerclient.events.HideRefresherEvent
-import kryx07.expensereconcilerclient.events.ShowProgressEvent
 import kryx07.expensereconcilerclient.network.ApiClient
 import kryx07.expensereconcilerclient.ui.transactions.TransactionDetailMvpView
 import kryx07.expensereconcilerclient.utils.SharedPreferencesManager
-import org.greenrobot.eventbus.EventBus
-import timber.log.Timber
+import org.joda.time.DateTime
+import org.joda.time.chrono.GregorianChronology
 import javax.inject.Inject
-
 
 
 class TransactionDetailPresenter @Inject constructor(var apiClient: ApiClient,
@@ -24,20 +18,19 @@ class TransactionDetailPresenter @Inject constructor(var apiClient: ApiClient,
 
     }
 
-    private fun showProgress() {
-        EventBus.getDefault().post(ShowProgressEvent())
-
+    fun parseGregorianDate(string: String): DateTime {
+        val date = try {
+            DateTime.parse(string)
+        } catch (e: IllegalArgumentException) {
+            DateTime.now()
+        }
+        return date.withMonthOfYear(date.monthOfYear - 1)
     }
 
-    private fun hideProgress() {
-        EventBus.getDefault().post(HideProgressEvent())
-        EventBus.getDefault().post(HideRefresherEvent())
-    }
-
-    private fun showErrorMessage() {
-        Timber.e(context.getString(R.string.fetching_error))
-        Toast.makeText(context, context.getString(R.string.fetching_error), Toast.LENGTH_LONG).show()
-    }
+    fun getDateOf(year: Int, month: Int, day: Int) =
+            DateTime(GregorianChronology
+                    .getInstance())
+                    .withDate(year, month + 1, day)
 
 
 }

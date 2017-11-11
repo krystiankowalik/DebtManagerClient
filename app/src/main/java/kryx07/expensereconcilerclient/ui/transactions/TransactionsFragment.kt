@@ -2,12 +2,12 @@ package kryx07.expensereconcilerclient.ui.transactions
 
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
@@ -26,7 +26,7 @@ import javax.inject.Inject
 class TransactionsFragment : RefreshableFragment(), TransactionsMvpView {
 
     @Inject lateinit var presenter: TransactionsPresenter
-    lateinit var adapter: TransactionsAdapter
+    private lateinit var adapter: TransactionsAdapter
     @Inject lateinit var eventBus: EventBus
 
     @JvmField
@@ -40,12 +40,8 @@ class TransactionsFragment : RefreshableFragment(), TransactionsMvpView {
         ButterKnife.bind(this, view)
         App.appComponent.inject(this)
 
-        //Adapter setup
         setupAdapter(view)
-
         presenter.attachView(this)
-
-        //(activity as DashboardActivity).supportActionBar?.setTitle(R.string.transactions)
         eventBus.post(SetActivityTitleEvent(getString(R.string.transactions)))
 
         return view
@@ -71,27 +67,28 @@ class TransactionsFragment : RefreshableFragment(), TransactionsMvpView {
 
     override fun onRefresh() = presenter.requestTransactions()
 
+
     @OnClick(R.id.fab)
     fun addTransactionClick() {
         showProgress()
         showFragment(TransactionDetailFragment())
     }
 
-    private fun showFragment(fragment: Fragment) = eventBus.post(ReplaceFragmentEvent(fragment, javaClass.toString()))
+    private fun showFragment(fragment: Fragment) = eventBus.post(ReplaceFragmentEvent(fragment))
     override fun showProgress() = EventBus.getDefault().post(ShowProgressEvent())
     override fun hideProgress() {
         EventBus.getDefault().post(HideProgressEvent())
         EventBus.getDefault().post(HideRefresherEvent())
     }
 
-    override fun showToastAndLog(string: String) {
+    override fun showSnackAndLog(string: String) {
         Timber.e(string)
-        Toast.makeText(context, string, Toast.LENGTH_LONG).show()
+        Snackbar.make(view!!, string, Snackbar.LENGTH_LONG).show()
     }
 
-    override fun showToastAndLog(int: Int) {
+    override fun showSnackAndLog(int: Int) {
         Timber.e(context.getString(int))
-        Toast.makeText(context, context.getString(int), Toast.LENGTH_LONG).show()
+        Snackbar.make(view!!, context.getString(int), Snackbar.LENGTH_LONG).show()
     }
 }
 

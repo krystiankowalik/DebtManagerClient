@@ -7,8 +7,8 @@ interface TransactionsMvpView : MvpView {
 
     fun updateData(transactions: List<Transaction>)
 
-    fun showToastAndLog(string:String)
-    fun showToastAndLog(int:Int)
+    fun showSnackAndLog(string:String)
+    fun showSnackAndLog(int:Int)
 
 
 }

@@ -51,7 +51,7 @@ class PayablesPresenter @Inject constructor(var apiClient: ApiClient,
             }
 
             override fun onFailure(call: Call<Payables>?, t: Throwable?) {
-                showToastAndLog()
+                showSnackAndLog()
                 hideProgress()
             }
 
@@ -86,7 +86,7 @@ class PayablesPresenter @Inject constructor(var apiClient: ApiClient,
         view.updateTotals(myReceivables, myPayables)
     }
 
-    private fun showToastAndLog() {
+    private fun showSnackAndLog() {
         Timber.e(context.getString(R.string.fetching_error))
         Toast.makeText(context, context.getString(R.string.fetching_error), Toast.LENGTH_LONG).show()
     }

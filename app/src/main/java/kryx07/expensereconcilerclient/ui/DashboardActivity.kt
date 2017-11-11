@@ -19,6 +19,7 @@ import kryx07.expensereconcilerclient.ui.transactions.TransactionsFragment
 import kryx07.expensereconcilerclient.utils.SharedPreferencesManager
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import timber.log.Timber
 import javax.inject.Inject
 
 class DashboardActivity @Inject constructor() : AppCompatActivity() {
@@ -39,15 +40,12 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
         setupActionBar()
         setupNavigationDrawer()
 
-        //setupDrawerAndActionBar()
         if (savedInstanceState == null) {
             showFragment(TransactionsFragment())
         }
 
         //to be replaced with login!!!
         sharedPreferencesManager.write(getString(R.string.my_user), "2")
-
-
     }
 
     override fun onDestroy() {
@@ -82,6 +80,7 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
         dashboard_nav.setNavigationItemSelectedListener(NavigationView.OnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.menu_transactions -> {
+                    dashboard_drawer.closeDrawers()
                     showFragment(TransactionsFragment())
                     return@OnNavigationItemSelectedListener true
                 }
@@ -94,7 +93,6 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
         })
     }
 
-
     private fun getVisibleFragment(): Fragment? {
         val fragmentManager = supportFragmentManager
         val fragments = fragmentManager.fragments
@@ -102,7 +100,7 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
     }
 
     @Subscribe
-    fun onShowProgress(showProgressEventEvent: ShowProgressEvent) {
+    fun onShowProgress(showProgressEvent: ShowProgressEvent) {
         fragment_container.visibility = View.INVISIBLE
         dashboard_progress.visibility = View.VISIBLE
     }
@@ -113,9 +111,8 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
         dashboard_progress.visibility = View.GONE
     }
 
-    private fun showFragment(fragment: Fragment) {
-        eventBus.post(ReplaceFragmentEvent(fragment, javaClass.toString()))
-    }
+    private fun showFragment(fragment: Fragment) = eventBus.post(ReplaceFragmentEvent(fragment))
+
 
     private inline fun FragmentManager.inTransaction(func: FragmentTransaction.() -> FragmentTransaction) =
             beginTransaction().func().commit()
@@ -133,18 +130,23 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
 
     @Subscribe
     fun onReplaceFragmentEvent(replaceFragmentEvent: ReplaceFragmentEvent) {
-        supportFragmentManager.inTransaction {
-            replace(R.id.fragment_container,
-                    replaceFragmentEvent.fragment,
-                    replaceFragmentEvent.fragment.javaClass.toString())
-                    .addToBackStack(replaceFragmentEvent.tag)
+        if (supportFragmentManager.findFragmentByTag(replaceFragmentEvent.fragmentTag) == null) {
+
+            supportFragmentManager.inTransaction {
+                replace(R.id.fragment_container,
+                        replaceFragmentEvent.fragment,
+                        replaceFragmentEvent.fragmentTag)
+                        .addToBackStack(javaClass.toString())
+            }
         }
+        Timber.e(replaceFragmentEvent.toString())
+
     }
+
 
     @Subscribe
     fun onSetActivityTitle(setActivityTitleEvent: SetActivityTitleEvent) {
         supportActionBar?.title = setActivityTitleEvent.title
     }
-
 
 }
