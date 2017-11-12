@@ -24,15 +24,11 @@ import kryx07.expensereconcilerclient.ui.users.UserSearchFragment
 import kryx07.expensereconcilerclient.utils.StringUtilities
 import org.greenrobot.eventbus.EventBus
 import org.joda.time.LocalDate
+import timber.log.Timber
 import javax.inject.Inject
 
 
 class TransactionDetailFragment : android.support.v4.app.Fragment(), TransactionDetailMvpView, DatePickerDialog.OnDateSetListener {
-
-    //Terrible hack to be removed!!
-    companion object {
-        var id = 0
-    }
 
     @Inject lateinit var presenter: TransactionDetailPresenter
     private lateinit var adapter: TransactionsAdapter
@@ -60,6 +56,16 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
         common_input.isChecked = !common_input.isChecked
     }
 
+    private fun handleReceivedBundle(bundle: Bundle?) {
+        if (bundle != null) {
+            val transaction= bundle.getParcelable<Transaction>(getString(R.string.clicked_transaction))
+            Timber.e(transaction.toString())
+            Timber.e(transaction.date.toString())
+            updateView(transaction)
+        }
+
+    }
+
     override fun updateView(transaction: Transaction) {
         date_input.setText(StringUtilities.formatDate(transaction.date))
         amount_input.setText(transaction.amount.toString())
@@ -71,10 +77,7 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initDate(view)
         hideProgress()
-        if (TransactionDetailFragment.id != 0) {
-            presenter.requestTransaction(TransactionDetailFragment.id)
-            TransactionDetailFragment.id = 0
-        }
+        handleReceivedBundle(arguments)
         super.onViewCreated(view, savedInstanceState)
     }
 

@@ -6,18 +6,19 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.item_transactions_adapter.view.*
 import kryx07.expensereconcilerclient.R
-import kryx07.expensereconcilerclient.events.ReplaceFragmentEvent
 import kryx07.expensereconcilerclient.model.transactions.Transaction
-import kryx07.expensereconcilerclient.ui.transactions.detail.TransactionDetailFragment
 import kryx07.expensereconcilerclient.utils.StringUtilities
-import org.greenrobot.eventbus.EventBus
 
-class TransactionsAdapter() : RecyclerView.Adapter<TransactionsAdapter.TransactionsHolder>() {
+class TransactionsAdapter(private val transactionClickListener: TransactionClickListener) : RecyclerView.Adapter<TransactionsAdapter.TransactionsHolder>() {
+
+    interface TransactionClickListener {
+        fun onTransactionClick(transaction: Transaction)
+    }
 
     var transactions = (mutableListOf<Transaction>())
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): TransactionsHolder {
-        return TransactionsHolder(LayoutInflater.from(parent?.context).inflate(R.layout.item_transactions_adapter, parent, false))
+        return TransactionsHolder(LayoutInflater.from(parent?.context).inflate(R.layout.item_transactions_adapter, parent, false), transactionClickListener)
     }
 
     override fun onBindViewHolder(holder: TransactionsHolder?, position: Int) {
@@ -26,12 +27,11 @@ class TransactionsAdapter() : RecyclerView.Adapter<TransactionsAdapter.Transacti
 
     override fun getItemCount(): Int = transactions.size
 
-    class TransactionsHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class TransactionsHolder(itemView: View, private val transactionClickListener: TransactionClickListener) : RecyclerView.ViewHolder(itemView) {
 
         fun setupTransaction(transaction: Transaction) {
             itemView.setOnClickListener({
-                TransactionDetailFragment.id = transaction.id
-                EventBus.getDefault().post(ReplaceFragmentEvent(TransactionDetailFragment()))
+                transactionClickListener.onTransactionClick(transaction)
             })
 
             itemView.date_text.text = transaction.date.toString()

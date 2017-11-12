@@ -24,7 +24,8 @@ import timber.log.Timber
 import javax.inject.Inject
 
 
-class TransactionsFragment : RefreshableFragment(), TransactionsMvpView {
+class TransactionsFragment : RefreshableFragment(), TransactionsMvpView, TransactionsAdapter.TransactionClickListener {
+
 
     @Inject lateinit var presenter: TransactionsPresenter
     private lateinit var adapter: TransactionsAdapter
@@ -51,8 +52,16 @@ class TransactionsFragment : RefreshableFragment(), TransactionsMvpView {
         return view
     }
 
+    override fun onTransactionClick(transaction: Transaction) {
+        val transactionDetailFragment = TransactionDetailFragment()
+        val bundle = Bundle()
+        bundle.putParcelable(getString(R.string.clicked_transaction), transaction)
+        transactionDetailFragment.arguments = bundle
+        eventBus.post(ReplaceFragmentEvent(transactionDetailFragment))
+    }
+
     private fun setupAdapter(view: View) {
-        adapter = TransactionsAdapter()
+        adapter = TransactionsAdapter(this)
         view.transactions_recycler.layoutManager = LinearLayoutManager(context)
         view.transactions_recycler.adapter = adapter
     }

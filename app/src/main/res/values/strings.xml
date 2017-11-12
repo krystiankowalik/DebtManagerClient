@@ -31,5 +31,6 @@
     <string name="my_transactions">My Transactions</string>
     <string name="my_groups">My Groups</string>
     <string name="common">Common</string>
+    <string name="clicked_transaction">clicked_transaction</string>
 
 </resources>
