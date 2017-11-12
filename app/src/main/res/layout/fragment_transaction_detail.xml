@@ -104,6 +104,17 @@
 
         </android.support.design.widget.TextInputLayout>
 
+        <CheckedTextView
+            android:id="@+id/common_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/payer_input_layout"
+            android:checkMark="?android:attr/textCheckMark"
+            android:padding="@dimen/margin_item_adapter"
+            android:text="@string/common"
+            android:textColor="@color/gray"
+            android:textSize="16sp" />
+
     </RelativeLayout>
 
 </RelativeLayout>

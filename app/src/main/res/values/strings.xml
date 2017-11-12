@@ -30,5 +30,6 @@
     <string name="balance_amount">amount</string>
     <string name="my_transactions">My Transactions</string>
     <string name="my_groups">My Groups</string>
+    <string name="common">Common</string>
 
 </resources>

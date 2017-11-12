@@ -41,7 +41,7 @@ class TransactionDetailPresenter @Inject constructor(var apiClient: ApiClient,
         view.updateView(transaction)
         view.hideProgress()
     }
-
+    //TODO to cleaup the dates mess!!!
     fun parseGregorianDate(string: String): DateTime {
         val date = try {
             DateTime.parse(string)

@@ -49,10 +49,15 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
         activity.dashboard_toolbar.title = getString(R.string.transaction_detail)
         eventBus.post(SetDrawerStatusEvent(false))
 
-
+        view.common_input.isClickable = true
 
         return view
 
+    }
+
+    @OnClick(R.id.common_input)
+    fun onCheckBoxClick() {
+        common_input.isChecked = !common_input.isChecked
     }
 
     override fun updateView(transaction: Transaction) {
@@ -60,6 +65,7 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
         amount_input.setText(transaction.amount.toString())
         description_input.setText(transaction.description)
         payer_input.setText(transaction.payer.username)
+        common_input.isChecked = transaction.common
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
