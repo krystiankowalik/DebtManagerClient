@@ -25,5 +25,10 @@
     <string name="payer">Payer</string>
     <string name="action_search">Search for a user</string>
     <string name="groups">Groups</string>
+    <string name="balance">Balance</string>
+    <string name="balance_currency">PLN</string>
+    <string name="balance_amount">amount</string>
+    <string name="my_transactions">My Transactions</string>
+    <string name="my_groups">My Groups</string>
 
 </resources>

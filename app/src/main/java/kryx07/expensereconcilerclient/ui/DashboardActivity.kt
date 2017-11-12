@@ -6,6 +6,7 @@ import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
+import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
@@ -41,15 +42,16 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
         setupNavigationDrawer()
 
         if (savedInstanceState == null) {
-            showFragment(TransactionsFragment())
+//                 showFragment(TransactionsFragment())
         }
 
         //to be replaced with login!!!
         sharedPreferencesManager.write(getString(R.string.my_user), "2")
+
     }
 
     override fun onDestroy() {
-        EventBus.getDefault().unregister(this)
+        eventBus.unregister(this)
         super.onDestroy()
     }
 
@@ -64,7 +66,7 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
 
     private fun setupNavigationListener(toggle: ActionBarDrawerToggle) {
         supportFragmentManager.addOnBackStackChangedListener {
-            if (supportFragmentManager.backStackEntryCount > 1) {
+            if (supportFragmentManager.backStackEntryCount > 0) {
                 toggle.isDrawerIndicatorEnabled = false
                 supportActionBar!!.setDisplayHomeAsUpEnabled(true)
                 toggle.setToolbarNavigationClickListener { onBackPressed() }
@@ -80,17 +82,22 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
         dashboard_nav.setNavigationItemSelectedListener(NavigationView.OnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.menu_transactions -> {
-                    return@OnNavigationItemSelectedListener this.hadleDrawerOpenAction(TransactionsFragment())
+                    return@OnNavigationItemSelectedListener this.handleDrawerOpenAction(TransactionsFragment())
                 }
                 R.id.menu_payables -> {
-                    return@OnNavigationItemSelectedListener this.hadleDrawerOpenAction(GroupsFragment())
+                    return@OnNavigationItemSelectedListener this.handleDrawerOpenAction(GroupsFragment())
                 }
             }
             false
         })
     }
 
-    private fun hadleDrawerOpenAction(fragment: Fragment): Boolean {
+    override fun onBackPressed() {
+        eventBus.post(SetDrawerStatusEvent(true))
+        super.onBackPressed()
+    }
+
+    private fun handleDrawerOpenAction(fragment: Fragment): Boolean {
         showFragment(fragment)
         dashboard_drawer.closeDrawers()
         return true
@@ -102,6 +109,20 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
         val fragments = fragmentManager.fragments
         return fragments.firstOrNull { it != null && it.isVisible }
     }
+
+
+    @Subscribe
+    fun setDrawerStatus(setDrawerStatusEvent: SetDrawerStatusEvent) {
+
+        if (setDrawerStatusEvent.expandable) {
+            dashboard_drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+        } else {
+            dashboard_drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+
+        }
+
+    }
+
 
     @Subscribe
     fun onShowProgress(showProgressEvent: ShowProgressEvent) {
@@ -133,6 +154,8 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
 
     @Subscribe
     fun onReplaceFragmentEvent(replaceFragmentEvent: ReplaceFragmentEvent) {
+        eventBus.post(SetDrawerStatusEvent(true))
+
         val fragment = supportFragmentManager.findFragmentByTag(replaceFragmentEvent.fragmentTag)
         if (fragment == null) {
 
@@ -148,7 +171,7 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
 
         @Subscribe
         fun onRemoveFragmentEvent(removeFragmentEvent: RemoveFragmentEvent) {
-            val fragment = supportFragmentManager.findFragmentByTag(replaceFragmentEvent.fragmentTag)
+            val fragment = supportFragmentManager.findFragmentByTag(removeFragmentEvent.fragmentTag)
             if (fragment != null) {
                 supportFragmentManager.inTransaction {
                     remove(fragment)
@@ -156,15 +179,16 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
             } else {
 
             }
-            Timber.e(replaceFragmentEvent.toString())
+            Timber.e(removeFragmentEvent.toString())
 
         }
-
 
         @Subscribe
         fun onSetActivityTitle(setActivityTitleEvent: SetActivityTitleEvent) {
+            Timber.e("I get that:" + setActivityTitleEvent.title)
             supportActionBar?.title = setActivityTitleEvent.title
         }
+
 
     }
 }

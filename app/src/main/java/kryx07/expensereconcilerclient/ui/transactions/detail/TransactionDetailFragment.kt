@@ -9,24 +9,30 @@ import android.view.ViewGroup
 import android.widget.DatePicker
 import butterknife.ButterKnife
 import butterknife.OnClick
+import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.fragment_transaction_detail.*
 import kotlinx.android.synthetic.main.fragment_transaction_detail.view.*
 import kryx07.expensereconcilerclient.App
 import kryx07.expensereconcilerclient.R
 import kryx07.expensereconcilerclient.events.HideProgressEvent
 import kryx07.expensereconcilerclient.events.ReplaceFragmentEvent
-import kryx07.expensereconcilerclient.events.SetActivityTitleEvent
+import kryx07.expensereconcilerclient.events.SetDrawerStatusEvent
 import kryx07.expensereconcilerclient.events.ShowProgressEvent
+import kryx07.expensereconcilerclient.model.transactions.Transaction
 import kryx07.expensereconcilerclient.ui.transactions.TransactionsAdapter
 import kryx07.expensereconcilerclient.ui.users.UserSearchFragment
 import kryx07.expensereconcilerclient.utils.StringUtilities
 import org.greenrobot.eventbus.EventBus
-import org.joda.time.DateTime
+import org.joda.time.LocalDate
 import javax.inject.Inject
 
 
 class TransactionDetailFragment : android.support.v4.app.Fragment(), TransactionDetailMvpView, DatePickerDialog.OnDateSetListener {
 
+    //Terrible hack to be removed!!
+    companion object {
+        var id = 0
+    }
 
     @Inject lateinit var presenter: TransactionDetailPresenter
     private lateinit var adapter: TransactionsAdapter
@@ -39,22 +45,35 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
         ButterKnife.bind(this, view)
         presenter.attachView(this)
 
+        //eventBus.post(SetActivityTitleEvent(getString(R.string.transaction_detail)))
+        activity.dashboard_toolbar.title = getString(R.string.transaction_detail)
+        eventBus.post(SetDrawerStatusEvent(false))
 
-        eventBus.post(SetActivityTitleEvent(getString(R.string.transaction_detail)))
+
 
         return view
 
     }
 
+    override fun updateView(transaction: Transaction) {
+        date_input.setText(StringUtilities.formatDate(transaction.date))
+        amount_input.setText(transaction.amount.toString())
+        description_input.setText(transaction.description)
+        payer_input.setText(transaction.payer.username)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initDate(view)
         hideProgress()
+        if (TransactionDetailFragment.id != 0) {
+            presenter.requestTransaction(TransactionDetailFragment.id)
+            TransactionDetailFragment.id = 0
+        }
         super.onViewCreated(view, savedInstanceState)
     }
 
     private fun initDate(view: View) =
-            view.date_input.setText(StringUtilities.formatDate(DateTime.now()))
-
+            view.date_input.setText(StringUtilities.formatDate(LocalDate.now()))
 
     @OnClick(R.id.date_input)
     fun onDateClick() = showCalendar()

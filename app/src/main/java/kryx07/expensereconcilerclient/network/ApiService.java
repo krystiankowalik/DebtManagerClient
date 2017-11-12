@@ -23,6 +23,9 @@ public interface ApiService {
 
     @GET("groups/byUserId/")
     Observable<List<Group>> getUsersGroups(@Query("userId") int userId);
+
+    @GET("transactions/{id}")
+    Observable<Transaction> getTransactionById(@Path("id") int transactionId);
     /*@GET("/reconciliation/payables-by-user")
     Call<Payables> getPayables(@Query("username") String username);*/
 /*

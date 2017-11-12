@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.OnClick
+import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.fragment_transactions.view.*
 import kryx07.expensereconcilerclient.App
 import kryx07.expensereconcilerclient.R
@@ -39,10 +40,13 @@ class TransactionsFragment : RefreshableFragment(), TransactionsMvpView {
         super.onCreateView(inflater, view.transactions_swipe_refresher, savedInstanceState)
         ButterKnife.bind(this, view)
         App.appComponent.inject(this)
-
         setupAdapter(view)
         presenter.attachView(this)
-        eventBus.post(SetActivityTitleEvent(getString(R.string.transactions)))
+
+        activity.dashboard_toolbar.title = getString(R.string.my_transactions)
+//        eventBus.post(SetActivityTitleEvent(getString(R.string.transactions)))
+
+        eventBus.post(SetDrawerStatusEvent(false))
 
         return view
     }

@@ -5,12 +5,13 @@ import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.SearchView
 import android.view.*
+import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.fragment_user_search_view.view.*
 import kryx07.expensereconcilerclient.App
 import kryx07.expensereconcilerclient.R
 import kryx07.expensereconcilerclient.events.HideProgressEvent
 import kryx07.expensereconcilerclient.events.HideRefresherEvent
-import kryx07.expensereconcilerclient.events.SetActivityTitleEvent
+import kryx07.expensereconcilerclient.events.SetDrawerStatusEvent
 import kryx07.expensereconcilerclient.events.ShowProgressEvent
 import kryx07.expensereconcilerclient.model.users.User
 import org.greenrobot.eventbus.EventBus
@@ -51,7 +52,10 @@ class UserSearchFragment : Fragment(), SearchView.OnQueryTextListener, UserSearc
 
         presenter.attachView(this)
 
-        eventBus.post(SetActivityTitleEvent("Select the payer"))
+        activity.dashboard_toolbar.title = getString(R.string.transaction_detail)
+//        eventBus.post(SetActivityTitleEvent("Select the payer"))
+        eventBus.post(SetDrawerStatusEvent(false))
+
         setHasOptionsMenu(true)
 
         return view

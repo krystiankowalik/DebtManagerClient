@@ -7,12 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import butterknife.ButterKnife
+import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.fragment_groups.view.*
 import kryx07.expensereconcilerclient.App
 import kryx07.expensereconcilerclient.R
 import kryx07.expensereconcilerclient.events.HideProgressEvent
 import kryx07.expensereconcilerclient.events.ReplaceFragmentEvent
-import kryx07.expensereconcilerclient.events.SetActivityTitleEvent
+import kryx07.expensereconcilerclient.events.SetDrawerStatusEvent
 import kryx07.expensereconcilerclient.events.ShowProgressEvent
 import kryx07.expensereconcilerclient.model.users.Group
 import org.greenrobot.eventbus.EventBus
@@ -38,7 +39,8 @@ class GroupsFragment @Inject constructor() : Fragment(), GroupsMvpView {
         view.groups_recycler.adapter = adapter
         presenter.attachView(this)
 
-        eventBus.post(SetActivityTitleEvent(getString(R.string.groups)))
+        activity.dashboard_toolbar.title = getString(R.string.my_groups)
+        eventBus.post(SetDrawerStatusEvent(false))
 
         return view
 
