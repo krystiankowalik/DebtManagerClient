@@ -17,7 +17,6 @@ import kryx07.expensereconcilerclient.events.HideProgressEvent
 import kryx07.expensereconcilerclient.events.ReplaceFragmentEvent
 import kryx07.expensereconcilerclient.events.SetActivityTitleEvent
 import kryx07.expensereconcilerclient.events.ShowProgressEvent
-import kryx07.expensereconcilerclient.ui.transactions.TransactionDetailMvpView
 import kryx07.expensereconcilerclient.ui.transactions.TransactionsAdapter
 import kryx07.expensereconcilerclient.ui.users.UserSearchFragment
 import kryx07.expensereconcilerclient.utils.StringUtilities
@@ -62,7 +61,7 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
 
 
     @OnClick(R.id.payer_input)
-    fun onPayerClick(){
+    fun onPayerClick() {
         showProgress()
         showFragment(UserSearchFragment())
     }
@@ -76,7 +75,7 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
     override fun onDateSet(p0: DatePicker, year: Int, month: Int, day: Int) =
             date_input
                     .setText(StringUtilities
-                            .formatDate(presenter.getDateOf(year,month,day)))
+                            .formatDate(presenter.getDateOf(year, month, day)))
 
     override fun onStart() {
         super.onStart()

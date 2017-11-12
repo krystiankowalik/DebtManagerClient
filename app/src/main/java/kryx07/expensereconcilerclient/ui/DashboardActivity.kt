@@ -10,11 +10,11 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import butterknife.ButterKnife
-import io.objectbox.BoxStore
 import kotlinx.android.synthetic.main.activity_dashboard.*
 import kryx07.expensereconcilerclient.App
 import kryx07.expensereconcilerclient.R
 import kryx07.expensereconcilerclient.events.*
+import kryx07.expensereconcilerclient.ui.group.GroupsFragment
 import kryx07.expensereconcilerclient.ui.transactions.TransactionsFragment
 import kryx07.expensereconcilerclient.utils.SharedPreferencesManager
 import org.greenrobot.eventbus.EventBus
@@ -25,7 +25,7 @@ import javax.inject.Inject
 class DashboardActivity @Inject constructor() : AppCompatActivity() {
 
     @Inject lateinit var sharedPreferencesManager: SharedPreferencesManager
-    @Inject lateinit var boxStore: BoxStore
+    //    @Inject lateinit var boxStore: BoxStore
     @Inject lateinit var eventBus: EventBus
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,18 +80,22 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
         dashboard_nav.setNavigationItemSelectedListener(NavigationView.OnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.menu_transactions -> {
-                    dashboard_drawer.closeDrawers()
-                    showFragment(TransactionsFragment())
-                    return@OnNavigationItemSelectedListener true
+                    return@OnNavigationItemSelectedListener this.hadleDrawerOpenAction(TransactionsFragment())
                 }
-            /*R.id.menu_payables -> {
-                showFragment(PayablesFragment())
-                return@OnNavigationItemSelectedListener true
-            }*/
+                R.id.menu_payables -> {
+                    return@OnNavigationItemSelectedListener this.hadleDrawerOpenAction(GroupsFragment())
+                }
             }
             false
         })
     }
+
+    private fun hadleDrawerOpenAction(fragment: Fragment): Boolean {
+        showFragment(fragment)
+        dashboard_drawer.closeDrawers()
+        return true
+    }
+
 
     private fun getVisibleFragment(): Fragment? {
         val fragmentManager = supportFragmentManager
@@ -117,20 +121,20 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
     private inline fun FragmentManager.inTransaction(func: FragmentTransaction.() -> FragmentTransaction) =
             beginTransaction().func().commit()
 
-
     @Subscribe
     fun onAddFragmentEvent(addFragmentEvent: AddFragmentEvent) {
         supportFragmentManager.inTransaction {
             add(R.id.fragment_container,
                     addFragmentEvent.fragment,
                     addFragmentEvent.fragment.javaClass.toString())
-                    .addToBackStack(addFragmentEvent.tag)
+                    .addToBackStack(javaClass.toString())
         }
     }
 
     @Subscribe
     fun onReplaceFragmentEvent(replaceFragmentEvent: ReplaceFragmentEvent) {
-        if (supportFragmentManager.findFragmentByTag(replaceFragmentEvent.fragmentTag) == null) {
+        val fragment = supportFragmentManager.findFragmentByTag(replaceFragmentEvent.fragmentTag)
+        if (fragment == null) {
 
             supportFragmentManager.inTransaction {
                 replace(R.id.fragment_container,
@@ -141,12 +145,26 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
         }
         Timber.e(replaceFragmentEvent.toString())
 
+
+        @Subscribe
+        fun onRemoveFragmentEvent(removeFragmentEvent: RemoveFragmentEvent) {
+            val fragment = supportFragmentManager.findFragmentByTag(replaceFragmentEvent.fragmentTag)
+            if (fragment != null) {
+                supportFragmentManager.inTransaction {
+                    remove(fragment)
+                }
+            } else {
+
+            }
+            Timber.e(replaceFragmentEvent.toString())
+
+        }
+
+
+        @Subscribe
+        fun onSetActivityTitle(setActivityTitleEvent: SetActivityTitleEvent) {
+            supportActionBar?.title = setActivityTitleEvent.title
+        }
+
     }
-
-
-    @Subscribe
-    fun onSetActivityTitle(setActivityTitleEvent: SetActivityTitleEvent) {
-        supportActionBar?.title = setActivityTitleEvent.title
-    }
-
 }

@@ -3,7 +3,7 @@ package kryx07.expensereconcilerclient.ui.transactions.detail
 import android.content.Context
 import kryx07.expensereconcilerclient.base.presenter.BasePresenter
 import kryx07.expensereconcilerclient.network.ApiClient
-import kryx07.expensereconcilerclient.ui.transactions.TransactionDetailMvpView
+import kryx07.expensereconcilerclient.ui.transactions.detail.TransactionDetailMvpView
 import kryx07.expensereconcilerclient.utils.SharedPreferencesManager
 import org.joda.time.DateTime
 import org.joda.time.chrono.GregorianChronology

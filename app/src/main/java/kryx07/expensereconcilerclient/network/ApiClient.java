@@ -23,9 +23,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiClient {
 
     //private static final String BASE_URL = "http://localhost:8090/";
-    private static final String BASE_URL = "http://192.168.0.12:8090/";
+    //private static final String BASE_URL = "http://192.168.0.12:8090/";
+//    private static final String BASE_URL = "http://37.47.190.105:8090";
     //private static final String BASE_URL = "http://89.70.46.105:8090/";
 //    private static final String BASE_URL = "http://192.168.43.231:8090/";
+    private static final String BASE_URL = "http://192.168.43.154:8090";
 
     private ApiService service;
 
