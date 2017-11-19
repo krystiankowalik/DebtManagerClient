@@ -30,6 +30,8 @@ class Transaction(
             source.readParcelable<User>(User::class.java.classLoader)
     )
 
+    constructor() : this(0, BigDecimal(0), "", LocalDate.now(), false, Group(0, ""), User(0, "", ""))
+
     override fun describeContents() = 0
 
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {

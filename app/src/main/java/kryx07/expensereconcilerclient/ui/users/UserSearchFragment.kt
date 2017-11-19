@@ -1,5 +1,6 @@
 package kryx07.expensereconcilerclient.ui.users
 
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -9,22 +10,18 @@ import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.fragment_user_search_view.view.*
 import kryx07.expensereconcilerclient.App
 import kryx07.expensereconcilerclient.R
-import kryx07.expensereconcilerclient.events.HideProgressEvent
-import kryx07.expensereconcilerclient.events.HideRefresherEvent
-import kryx07.expensereconcilerclient.events.SetDrawerStatusEvent
-import kryx07.expensereconcilerclient.events.ShowProgressEvent
+import kryx07.expensereconcilerclient.events.*
 import kryx07.expensereconcilerclient.model.users.User
 import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 
 
-class UserSearchFragment : Fragment(), SearchView.OnQueryTextListener, UserSearchMvpView {
+class UserSearchFragment : Fragment(), SearchView.OnQueryTextListener, UserSearchMvpView, UsersAdapter.OnUserClickListener {
 
 
     @Inject lateinit var presenter: UserSearchPresenter
     //@Inject lateinit var apiClient: ApiClient
     @Inject lateinit var eventBus: EventBus
-
     lateinit var adapter: UsersAdapter
 
     //private val usersList = arrayListOf<User>()
@@ -42,15 +39,13 @@ class UserSearchFragment : Fragment(), SearchView.OnQueryTextListener, UserSearc
 
         val view = inflater!!.inflate(R.layout.fragment_user_search_view, container, false)
         super.onCreateView(inflater, container, savedInstanceState)
-        App.appComponent.inject(this)
 
 //        activity.actionBar.setDisplayHomeAsUpEnabled(true)
 
-        adapter = UsersAdapter()
+        adapter = UsersAdapter(this)
         view.users_recycler.layoutManager = LinearLayoutManager(context)
         view.users_recycler.adapter = adapter
 
-        presenter.attachView(this)
 
         activity.dashboard_toolbar.title = getString(R.string.transaction_detail)
 //        eventBus.post(SetActivityTitleEvent("Select the payer"))
@@ -59,6 +54,27 @@ class UserSearchFragment : Fragment(), SearchView.OnQueryTextListener, UserSearc
         setHasOptionsMenu(true)
 
         return view
+    }
+
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+    }
+
+    override fun onUserClick(user: User) {
+        eventBus.postSticky(UpdatePayerEvent(user))
+        fragmentManager.popBackStack()
+
+    }
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        App.appComponent.inject(this)
+        presenter.attachView(this)
+    }
+
+    override fun onDetach() {
+        presenter.detach()
+        super.onDetach()
     }
 
     override fun onStart() {

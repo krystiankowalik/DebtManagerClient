@@ -1,11 +1,8 @@
 package kryx07.expensereconcilerclient.events
 
-import android.support.v4.app.Fragment
-
 class RemoveFragmentEvent(
-        val fragment: Fragment
+        val fragmentTag: String
 ){
-    var fragmentTag: String = fragment.javaClass.toString()
 
 
 

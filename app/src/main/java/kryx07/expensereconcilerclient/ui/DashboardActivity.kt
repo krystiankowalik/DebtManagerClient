@@ -1,6 +1,5 @@
 package kryx07.expensereconcilerclient.ui
 
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.NavigationView
@@ -46,17 +45,9 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
 //                 showFragment(TransactionsFragment())
         }
 
-        handleIncomingIntent(intent)
-
         //to be replaced with login!!!
         sharedPreferencesManager.write(getString(R.string.my_user), "2")
 
-    }
-
-    private fun handleIncomingIntent(intent: Intent?) {
-        if (intent != null) {
-            Timber.e(intent.getStringExtra("dupa"))
-        }
     }
 
     override fun onDestroy() {
@@ -167,10 +158,14 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
 
         val fragment = supportFragmentManager.findFragmentByTag(replaceFragmentEvent.fragmentTag)
         if (fragment == null) {
+            val newFragment = replaceFragmentEvent.fragment
+            if (replaceFragmentEvent.bundle != null) {
+                newFragment.arguments = replaceFragmentEvent.bundle
+            }
 
             supportFragmentManager.inTransaction {
                 replace(R.id.fragment_container,
-                        replaceFragmentEvent.fragment,
+                        newFragment,
                         replaceFragmentEvent.fragmentTag)
                         .addToBackStack(javaClass.toString())
             }

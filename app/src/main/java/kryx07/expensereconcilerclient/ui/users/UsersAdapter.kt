@@ -7,18 +7,18 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.item_user.view.*
 import kryx07.expensereconcilerclient.R
-import kryx07.expensereconcilerclient.R.string.transactions
 import kryx07.expensereconcilerclient.model.users.User
-import timber.log.Timber
 
-class UsersAdapter : RecyclerView.Adapter<UsersAdapter.UsersHolder>() {
+class UsersAdapter(val onUserClickListener: OnUserClickListener) : RecyclerView.Adapter<UsersAdapter.UsersHolder>() {
 
     //var users = (mutableListOf<User>())
 
+    interface OnUserClickListener {
+        fun onUserClick(user:User)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): UsersHolder {
-        Timber.e("onCreateViewHolder")
-        return UsersAdapter.UsersHolder(LayoutInflater.from(parent?.context).inflate(R.layout.item_user, parent, false))
+        return UsersAdapter.UsersHolder(LayoutInflater.from(parent?.context).inflate(R.layout.item_user, parent, false),onUserClickListener)
     }
 
     override fun getItemCount(): Int = users.size()
@@ -27,15 +27,15 @@ class UsersAdapter : RecyclerView.Adapter<UsersAdapter.UsersHolder>() {
         holder?.setupItem(users[position])
     }
 
-    class UsersHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class UsersHolder(itemView: View, private val listener: OnUserClickListener) : RecyclerView.ViewHolder(itemView) {
         fun setupItem(user: User) {
+            itemView.setOnClickListener { listener.onUserClick(user) }
             itemView.username.text = user.username
         }
 
     }
 
     fun updateData(users: List<User>) {
-        Timber.e("update Data: " + transactions)
 
         this.users.clear()
         this.users.addAll(users)
@@ -44,7 +44,7 @@ class UsersAdapter : RecyclerView.Adapter<UsersAdapter.UsersHolder>() {
     }
 
 
-     var users = SortedList<User>(User::class.java, object : SortedList.Callback<User>() {
+    var users = SortedList<User>(User::class.java, object : SortedList.Callback<User>() {
         override fun onRemoved(position: Int, count: Int) {
             notifyItemRangeInserted(position, count)
         }

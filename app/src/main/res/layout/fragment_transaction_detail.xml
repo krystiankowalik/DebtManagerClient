@@ -3,118 +3,122 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:id="@+id/input_details"
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/date_input_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:padding="@dimen/margin_item_adapter">
 
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/date_input_layout"
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/date_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:focusable="false"
-            android:padding="@dimen/margin_item_adapter">
+            android:hint="@string/date"
+            android:inputType="date" />
 
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/date_input"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:focusable="false"
-                android:hint="@string/date"
-                android:inputType="date" />
+        <!--<EditText
+            android:id="@+id/date_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="date"
+            android:hint="@string/date"
+            android:focusable="false"
+            />-->
 
-            <!--<EditText
-                android:id="@+id/date_input"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="date"
-                android:hint="@string/date"
-                android:focusable="false"
-                />-->
+    </android.support.design.widget.TextInputLayout>
 
-        </android.support.design.widget.TextInputLayout>
+    <!-- <android.support.design.widget.TextInputLayout
+         android:id="@+id/date_input_layout"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:padding="@dimen/margin_item_adapter">
 
-        <!-- <android.support.design.widget.TextInputLayout
-             android:id="@+id/date_input_layout"
+         <android.support.design.widget.TextInputEditText
+             android:id="@+id/date_input"
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
-             android:padding="@dimen/margin_item_adapter">
-
-             <android.support.design.widget.TextInputEditText
-                 android:id="@+id/date_input"
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
-                 android:hint="@string/date" />-->
+             android:hint="@string/date" />-->
 
 
-        <!--</android.support.design.widget.TextInputLayout>-->
+    <!--</android.support.design.widget.TextInputLayout>-->
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/amount_input_layout"
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/amount_input_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/date_input_layout"
+        android:padding="@dimen/margin_item_adapter">
+
+        <requestFocus />
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/amount_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/date_input_layout"
-            android:padding="@dimen/margin_item_adapter">
-
-            <requestFocus />
-
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/amount_input"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/amount"
-                android:inputType="numberDecimal"
+            android:hint="@string/amount"
+            android:inputType="numberDecimal"
 
 
-                />
+            />
 
 
-        </android.support.design.widget.TextInputLayout>
+    </android.support.design.widget.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/description_input_layout"
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/description_input_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/amount_input_layout"
+        android:padding="@dimen/margin_item_adapter">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/description_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/amount_input_layout"
-            android:padding="@dimen/margin_item_adapter">
+            android:hint="@string/description" />
 
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/description_input"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/description" />
+    </android.support.design.widget.TextInputLayout>
 
-        </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/payer_input_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/description_input_layout"
+        android:padding="@dimen/margin_item_adapter">
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/payer_input_layout"
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/payer_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/description_input_layout"
-            android:padding="@dimen/margin_item_adapter">
+            android:focusable="false"
+            android:hint="@string/payer"
+            android:inputType="text" />
 
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/payer_input"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:focusable="false"
-                android:hint="@string/payer"
-                android:inputType="text" />
+    </android.support.design.widget.TextInputLayout>
 
-        </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/common_input_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/payer_input_layout"
+        android:layout_marginTop="30dp"
+        android:padding="@dimen/margin_item_adapter">
 
         <CheckedTextView
             android:id="@+id/common_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/payer_input_layout"
-            android:checkMark="?android:attr/textCheckMark"
-            android:padding="@dimen/margin_item_adapter"
+            android:checkMark="?android:attr/listChoiceIndicatorMultiple"
             android:text="@string/common"
             android:textColor="@color/gray"
-            android:textSize="16sp" />
+            android:textSize="18sp" />
 
-    </RelativeLayout>
+    </android.support.design.widget.TextInputLayout>
+
 
 </RelativeLayout>
+

@@ -18,6 +18,8 @@ class TransactionDetailPresenter @Inject constructor(var apiClient: ApiClient,
                                                      var context: Context,
                                                      val sharedPrefs: SharedPreferencesManager) : BasePresenter<TransactionDetailMvpView>() {
 
+
+
     fun start() {
 
     }
@@ -41,14 +43,14 @@ class TransactionDetailPresenter @Inject constructor(var apiClient: ApiClient,
         view.updateView(transaction)
         view.hideProgress()
     }
-    //TODO to cleaup the dates mess!!!
+
     fun parseGregorianDate(string: String): DateTime {
         val date = try {
             DateTime.parse(string)
         } catch (e: IllegalArgumentException) {
             DateTime.now()
         }
-        return date.withMonthOfYear(date.monthOfYear - 1)
+        return date.withMonthOfYear(date.monthOfYear)
     }
 
     fun getDateOf(year: Int, month: Int, day: Int) =

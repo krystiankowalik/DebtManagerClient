@@ -111,7 +111,8 @@ dependencies {
     //Recycler
     compile "com.android.support:recyclerview-v7:$app_compat_version"
 
-    compile 'com.yarolegovich:sliding-root-nav:1.1.0'
+
+
 
 }
 
