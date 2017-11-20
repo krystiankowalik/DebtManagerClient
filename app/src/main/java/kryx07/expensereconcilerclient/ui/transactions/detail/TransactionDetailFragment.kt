@@ -17,6 +17,7 @@ import kryx07.expensereconcilerclient.App
 import kryx07.expensereconcilerclient.R
 import kryx07.expensereconcilerclient.events.*
 import kryx07.expensereconcilerclient.model.transactions.Transaction
+import kryx07.expensereconcilerclient.ui.group.GroupsFragment
 import kryx07.expensereconcilerclient.ui.transactions.TransactionsAdapter
 import kryx07.expensereconcilerclient.ui.users.UserSearchFragment
 import kryx07.expensereconcilerclient.utils.StringUtilities
@@ -31,7 +32,7 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
     @Inject lateinit var presenter: TransactionDetailPresenter
     private lateinit var adapter: TransactionsAdapter
     @Inject lateinit var eventBus: EventBus
-    lateinit var datePickerDialog: DatePickerDialog
+    private lateinit var datePickerDialog: DatePickerDialog
 
     var transaction = Transaction()
 
@@ -43,10 +44,7 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
         activity.dashboard_toolbar.title = getString(R.string.transaction_detail)
         eventBus.post(SetDrawerStatusEvent(false))
 
-        view.common_input.isClickable = true
-
         return view
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -58,6 +56,15 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
             initDate()
         }
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    private fun handleReceivedBundle(bundle: Bundle?) {
+        if (bundle != null) {
+            val transaction = bundle.getParcelable<Transaction>(getString(R.string.clicked_transaction))
+            if (transaction != null) {
+                this.transaction = transaction
+            }
+        }
     }
 
     private fun initDate() {
@@ -78,16 +85,6 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
         super.onDetach()
     }
 
-    private fun handleReceivedBundle(bundle: Bundle?) {
-        if (bundle != null) {
-            val transaction = bundle.getParcelable<Transaction>(getString(R.string.clicked_transaction))
-            if (transaction != null) {
-                this.transaction = transaction
-            }
-        }
-
-    }
-
     override fun onResume() {
         super.onResume()
         updateView(transaction)
@@ -98,12 +95,18 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
         amount_input.setText(transaction.amount.toString())
         description_input.setText(transaction.description)
         payer_input.setText(transaction.payer.username)
+        group_input.setText(transaction.group.name)
         common_input.isChecked = transaction.common
     }
 
     @Subscribe
     fun onUpdatePayerEvent(updatePayerEvent: UpdatePayerEvent) {
         transaction.payer = updatePayerEvent.payer
+    }
+
+    @Subscribe
+    fun onUpdateGroupEvent(updateGroupEvent: UpdateGroupEvent) {
+        transaction.group = updateGroupEvent.group
     }
 
     @OnClick(R.id.date_input)
@@ -113,13 +116,17 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
     @OnClick(R.id.payer_input)
     fun onPayerClick() {
         showProgress()
-        val bundle = Bundle()
-        bundle.putParcelable(getString(R.string.transaction_user), this.transaction)
-        showFragment(UserSearchFragment(), bundle)
+        showFragment(UserSearchFragment())
     }
 
+    @OnClick(R.id.group_input)
+    fun onGroupClick() {
+        showProgress()
+        showFragment(GroupsFragment())
+    }
+
+
     private fun showCalendar() {
-//        val date = presenter.parseGregorianDate(date_input.text.toString())
         datePickerDialog.updateDate(transaction.date.year, transaction.date.monthOfYear - 1, transaction.date.dayOfMonth)
         datePickerDialog.show()
     }
@@ -133,10 +140,6 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
     override fun onStart() {
         super.onStart()
         presenter.start()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
     }
 
     private fun showFragment(fragment: Fragment) = eventBus.post(ReplaceFragmentEvent(fragment))

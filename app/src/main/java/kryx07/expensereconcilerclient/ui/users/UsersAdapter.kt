@@ -9,7 +9,7 @@ import kotlinx.android.synthetic.main.item_user.view.*
 import kryx07.expensereconcilerclient.R
 import kryx07.expensereconcilerclient.model.users.User
 
-class UsersAdapter(val onUserClickListener: OnUserClickListener) : RecyclerView.Adapter<UsersAdapter.UsersHolder>() {
+class UsersAdapter(private val onUserClickListener: OnUserClickListener) : RecyclerView.Adapter<UsersAdapter.UsersHolder>() {
 
     //var users = (mutableListOf<User>())
 

@@ -31,9 +31,9 @@ class TransactionsFragment : RefreshableFragment(), TransactionsMvpView, Transac
     private lateinit var adapter: TransactionsAdapter
     @Inject lateinit var eventBus: EventBus
 
-    @JvmField
+  /*  @JvmField
     @BindView(R.id.fab)
-    var floatingActionButton: FloatingActionButton? = null
+    var floatingActionButton: FloatingActionButton? = null*/
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
@@ -45,7 +45,6 @@ class TransactionsFragment : RefreshableFragment(), TransactionsMvpView, Transac
         presenter.attachView(this)
 
         activity.dashboard_toolbar.title = getString(R.string.my_transactions)
-//        eventBus.post(SetActivityTitleEvent(getString(R.string.transactions)))
 
         eventBus.post(SetDrawerStatusEvent(false))
 

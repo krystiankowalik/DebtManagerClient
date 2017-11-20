@@ -100,10 +100,27 @@
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/common_input_layout"
+        android:id="@+id/group_input_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/payer_input_layout"
+        android:padding="@dimen/margin_item_adapter">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/group_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            android:hint="@string/group"
+            android:inputType="text" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/common_input_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/group_input_layout"
         android:layout_marginTop="30dp"
         android:padding="@dimen/margin_item_adapter">
 
@@ -112,6 +129,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/payer_input_layout"
+            android:clickable="true"
             android:checkMark="?android:attr/listChoiceIndicatorMultiple"
             android:text="@string/common"
             android:textColor="@color/gray"

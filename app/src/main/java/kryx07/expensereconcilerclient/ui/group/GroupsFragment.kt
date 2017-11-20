@@ -11,15 +11,13 @@ import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.fragment_groups.view.*
 import kryx07.expensereconcilerclient.App
 import kryx07.expensereconcilerclient.R
-import kryx07.expensereconcilerclient.events.HideProgressEvent
-import kryx07.expensereconcilerclient.events.ReplaceFragmentEvent
-import kryx07.expensereconcilerclient.events.SetDrawerStatusEvent
-import kryx07.expensereconcilerclient.events.ShowProgressEvent
+import kryx07.expensereconcilerclient.events.*
 import kryx07.expensereconcilerclient.model.users.Group
 import org.greenrobot.eventbus.EventBus
+import timber.log.Timber
 import javax.inject.Inject
 
-class GroupsFragment @Inject constructor() : Fragment(), GroupsMvpView {
+class GroupsFragment @Inject constructor() : Fragment(), GroupsMvpView,GroupsAdapter.OnGroupClickListener{
 
     @Inject lateinit var presenter: GroupsPresenter
     private lateinit var adapter: GroupsAdapter
@@ -34,7 +32,7 @@ class GroupsFragment @Inject constructor() : Fragment(), GroupsMvpView {
         App.appComponent.inject(this)
         ButterKnife.bind(this, view)
 
-        adapter = GroupsAdapter()
+        adapter = GroupsAdapter(this)
         view.groups_recycler.layoutManager = LinearLayoutManager(context)
         view.groups_recycler.adapter = adapter
         presenter.attachView(this)
@@ -46,6 +44,11 @@ class GroupsFragment @Inject constructor() : Fragment(), GroupsMvpView {
 
     }
 
+    override fun onGroupClick(group: Group) {
+        Timber.e("Clicked")
+        eventBus.postSticky(UpdateGroupEvent(group))
+        fragmentManager.popBackStack()
+    }
 
     override fun updateData(groups: List<Group>) {
         adapter.updateData(groups)

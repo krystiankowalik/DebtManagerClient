@@ -7,13 +7,18 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.item_groups_adapter.view.*
 import kryx07.expensereconcilerclient.R
 import kryx07.expensereconcilerclient.model.users.Group
+import timber.log.Timber
 
-class GroupsAdapter : RecyclerView.Adapter<GroupsAdapter.GroupsHolder>() {
+class GroupsAdapter(val onGroupClickListener: OnGroupClickListener) : RecyclerView.Adapter<GroupsAdapter.GroupsHolder>() {
+
+    interface OnGroupClickListener {
+        fun onGroupClick(group: Group)
+    }
 
     var groups = mutableListOf<Group>()
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): GroupsHolder {
-        return GroupsHolder(LayoutInflater.from(parent?.context).inflate(R.layout.item_groups_adapter, parent, false))
+        return GroupsHolder(LayoutInflater.from(parent?.context).inflate(R.layout.item_groups_adapter, parent, false),onGroupClickListener)
     }
 
     override fun onBindViewHolder(holder: GroupsHolder?, position: Int) {
@@ -22,9 +27,11 @@ class GroupsAdapter : RecyclerView.Adapter<GroupsAdapter.GroupsHolder>() {
 
     override fun getItemCount(): Int = groups.size
 
-    class GroupsHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class GroupsHolder(itemView: View, private val onGroupClickListener: OnGroupClickListener) : RecyclerView.ViewHolder(itemView) {
 
         fun setupGroup(group: Group) {
+            Timber.e("onClick added?")
+            itemView.setOnClickListener({ onGroupClickListener.onGroupClick(group) })
             itemView.group_name.text = group.name
         }
 
