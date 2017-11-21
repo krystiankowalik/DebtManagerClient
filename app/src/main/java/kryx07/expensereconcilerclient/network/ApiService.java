@@ -6,7 +6,10 @@ import io.reactivex.Observable;
 import kryx07.expensereconcilerclient.model.transactions.Transaction;
 import kryx07.expensereconcilerclient.model.users.Group;
 import kryx07.expensereconcilerclient.model.users.User;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -26,6 +29,12 @@ public interface ApiService {
 
     @GET("transactions/{id}")
     Observable<Transaction> getTransactionById(@Path("id") int transactionId);
+
+    @POST("transactions")
+    Observable<Transaction> addTransaction(@Body Transaction transaction);
+
+    @PUT("transactions/{id}")
+    Observable<Transaction> updateTransaction(@Path("id") int transactionId, @Body Transaction transaction);
     /*@GET("/reconciliation/payables-by-user")
     Call<Payables> getPayables(@Query("username") String username);*/
 /*

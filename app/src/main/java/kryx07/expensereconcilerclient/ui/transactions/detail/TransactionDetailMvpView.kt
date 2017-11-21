@@ -5,4 +5,5 @@ import kryx07.expensereconcilerclient.model.transactions.Transaction
 
 interface TransactionDetailMvpView : MvpView {
     fun updateView(transaction: Transaction)
+    fun popBackStack()
 }

@@ -7,9 +7,8 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.item_groups_adapter.view.*
 import kryx07.expensereconcilerclient.R
 import kryx07.expensereconcilerclient.model.users.Group
-import timber.log.Timber
 
-class GroupsAdapter(val onGroupClickListener: OnGroupClickListener) : RecyclerView.Adapter<GroupsAdapter.GroupsHolder>() {
+class GroupsAdapter(private val onGroupClickListener: OnGroupClickListener) : RecyclerView.Adapter<GroupsAdapter.GroupsHolder>() {
 
     interface OnGroupClickListener {
         fun onGroupClick(group: Group)
@@ -30,7 +29,6 @@ class GroupsAdapter(val onGroupClickListener: OnGroupClickListener) : RecyclerVi
     class GroupsHolder(itemView: View, private val onGroupClickListener: OnGroupClickListener) : RecyclerView.ViewHolder(itemView) {
 
         fun setupGroup(group: Group) {
-            Timber.e("onClick added?")
             itemView.setOnClickListener({ onGroupClickListener.onGroupClick(group) })
             itemView.group_name.text = group.name
         }

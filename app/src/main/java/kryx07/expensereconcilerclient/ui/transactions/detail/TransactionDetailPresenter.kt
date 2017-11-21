@@ -19,7 +19,6 @@ class TransactionDetailPresenter @Inject constructor(var apiClient: ApiClient,
                                                      val sharedPrefs: SharedPreferencesManager) : BasePresenter<TransactionDetailMvpView>() {
 
 
-
     fun start() {
 
     }
@@ -57,6 +56,41 @@ class TransactionDetailPresenter @Inject constructor(var apiClient: ApiClient,
             DateTime(GregorianChronology
                     .getInstance())
                     .withDate(year, month + 1, day)
+
+    fun saveTransaction(transaction: Transaction) {
+        view.showProgress()
+
+        if (transaction.id == 0) {
+            addTransaction(transaction)
+        } else {
+            updateTransaction(transaction)
+        }
+
+    }
+
+    fun addTransaction(transaction: Transaction) {
+        apiClient.service
+                .addTransaction(transaction)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ receivedTransaction ->
+                 //   view.updateView(receivedTransaction)
+                    Timber.e("Received after adding new transaction: " + receivedTransaction)
+                    view.popBackStack()
+                })
+    }
+
+    fun updateTransaction(transaction: Transaction) {
+        apiClient.service
+                .updateTransaction(transaction.id, transaction)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ receivedTransaction ->
+                //    view.updateView(receivedTransaction)
+                    Timber.e("Received after update: " + receivedTransaction)
+                    view.popBackStack()
+                })
+    }
 
 
 }

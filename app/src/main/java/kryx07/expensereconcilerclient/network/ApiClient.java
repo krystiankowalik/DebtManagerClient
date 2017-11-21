@@ -2,10 +2,14 @@ package kryx07.expensereconcilerclient.network;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 import org.joda.time.LocalDate;
@@ -73,12 +77,25 @@ public class ApiClient {
         /*Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd").create();*/
 
-        Gson gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new JsonDeserializer<LocalDate>() {
+        final Gson gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new JsonDeserializer<LocalDate>() {
             @Override
             public LocalDate deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
                 return new LocalDate(json.getAsString());
             }
-        }).create();
+
+
+        }).registerTypeAdapter(LocalDate.class, new JsonSerializer<LocalDate>() {
+            @Override
+            public JsonElement serialize(LocalDate src, Type typeOfSrc, JsonSerializationContext context) {
+                JsonObject object = new JsonObject();
+                object.addProperty("date", src.toString("yyyy-MM-dd"));
+                return object.getAsJsonPrimitive("date");
+
+            }
+        })
+
+
+                .create();
 
         // Create retrofit instance
         Retrofit retrofit = new Retrofit.Builder()

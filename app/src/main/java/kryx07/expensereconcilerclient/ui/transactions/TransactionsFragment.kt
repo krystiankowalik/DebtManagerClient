@@ -31,10 +31,6 @@ class TransactionsFragment : RefreshableFragment(), TransactionsMvpView, Transac
     private lateinit var adapter: TransactionsAdapter
     @Inject lateinit var eventBus: EventBus
 
-  /*  @JvmField
-    @BindView(R.id.fab)
-    var floatingActionButton: FloatingActionButton? = null*/
-
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         val view = inflater!!.inflate(R.layout.fragment_transactions, container, false)
@@ -52,6 +48,7 @@ class TransactionsFragment : RefreshableFragment(), TransactionsMvpView, Transac
     }
 
     override fun onTransactionClick(transaction: Transaction) {
+        showProgress()
         val transactionDetailFragment = TransactionDetailFragment()
         val bundle = Bundle()
         bundle.putParcelable(getString(R.string.clicked_transaction), transaction)
@@ -69,6 +66,8 @@ class TransactionsFragment : RefreshableFragment(), TransactionsMvpView, Transac
         super.onStart()
         presenter.start()
     }
+
+
 
     override fun onDestroyView() {
         presenter.detach()

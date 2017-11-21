@@ -34,5 +34,7 @@
     <string name="clicked_transaction">clicked_transaction</string>
     <string name="transaction_user">Transaction_User</string>
     <string name="group">Group</string>
+    <string name="update_group_from_detail_view">Update group from detail view</string>
+    <string name="fragment_action">Fragment Action</string>
 
 </resources>

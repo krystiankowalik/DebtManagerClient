@@ -17,7 +17,7 @@ import org.greenrobot.eventbus.EventBus
 import timber.log.Timber
 import javax.inject.Inject
 
-class GroupsFragment @Inject constructor() : Fragment(), GroupsMvpView,GroupsAdapter.OnGroupClickListener{
+class GroupsFragment @Inject constructor() : Fragment(), GroupsMvpView, GroupsAdapter.OnGroupClickListener {
 
     @Inject lateinit var presenter: GroupsPresenter
     private lateinit var adapter: GroupsAdapter
@@ -45,9 +45,10 @@ class GroupsFragment @Inject constructor() : Fragment(), GroupsMvpView,GroupsAda
     }
 
     override fun onGroupClick(group: Group) {
-        Timber.e("Clicked")
-        eventBus.postSticky(UpdateGroupEvent(group))
-        fragmentManager.popBackStack()
+        if (arguments.get(getString(R.string.fragment_action))==getString(R.string.update_group_from_detail_view)) {
+            eventBus.postSticky(UpdateGroupEvent(group))
+            fragmentManager.popBackStack()
+        }
     }
 
     override fun updateData(groups: List<Group>) {

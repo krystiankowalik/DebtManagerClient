@@ -4,9 +4,9 @@ import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.*
 import android.widget.DatePicker
 import butterknife.ButterKnife
 import butterknife.OnClick
@@ -24,6 +24,7 @@ import kryx07.expensereconcilerclient.utils.StringUtilities
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.joda.time.LocalDate
+import java.math.BigDecimal
 import javax.inject.Inject
 
 
@@ -41,10 +42,61 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
         val view = inflater!!.inflate(R.layout.fragment_transaction_detail, container, false)
         ButterKnife.bind(this, view)
 
+        setHasOptionsMenu(true)
+
         activity.dashboard_toolbar.title = getString(R.string.transaction_detail)
         eventBus.post(SetDrawerStatusEvent(false))
 
+        addAmountChangedListener(view)
+        addDescriptionChangedListener(view)
+
         return view
+    }
+
+    private fun addAmountChangedListener(view: View) {
+        view.amount_input.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                try {
+                    transaction.amount = BigDecimal(s.toString())
+                } catch (e: NumberFormatException) {
+                    transaction.amount = BigDecimal.ZERO
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+        })
+    }
+
+    private fun addDescriptionChangedListener(view: View) {
+        view.description_input.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                transaction.description = s.toString()
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+        })
+
+    }
+
+    override fun popBackStack() {
+        fragmentManager.popBackStack()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_transaction_detail, menu)
+        menu.findItem(R.id.menu_save).setOnMenuItemClickListener({
+            presenter.saveTransaction(transaction)
+            return@setOnMenuItemClickListener true
+        })
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -122,7 +174,9 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
     @OnClick(R.id.group_input)
     fun onGroupClick() {
         showProgress()
-        showFragment(GroupsFragment())
+        val bundle = Bundle()
+        bundle.putString(getString(R.string.fragment_action), getString(R.string.update_group_from_detail_view))
+        showFragment(GroupsFragment(), bundle)
     }
 
 
@@ -144,6 +198,7 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
 
     private fun showFragment(fragment: Fragment) = eventBus.post(ReplaceFragmentEvent(fragment))
     private fun showFragment(fragment: Fragment, bundle: Bundle) = eventBus.post(ReplaceFragmentEvent(fragment, bundle))
+    private fun showFragment(fragment: Fragment, customTag: String) = eventBus.post(ReplaceFragmentEvent(fragment, customTag))
 
     override fun showProgress() = EventBus.getDefault().post(ShowProgressEvent())
 
@@ -152,7 +207,9 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
     @OnClick(R.id.common_input)
     fun onCheckBoxClick() {
         common_input.isChecked = !common_input.isChecked
+        transaction.common = common_input.isChecked
     }
+
 
 }
 
