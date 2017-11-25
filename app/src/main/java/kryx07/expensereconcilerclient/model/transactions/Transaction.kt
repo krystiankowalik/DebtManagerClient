@@ -19,7 +19,7 @@ class Transaction(
         var group: Group,
         var payer: User
 
-) : Serializable,Parcelable {
+) : Serializable, Parcelable {
     constructor(source: Parcel) : this(
             source.readInt(),
             source.readSerializable() as BigDecimal,
@@ -30,7 +30,18 @@ class Transaction(
             source.readParcelable<User>(User::class.java.classLoader)
     )
 
-    constructor() : this(0, BigDecimal(0), "", LocalDate.now(), false, Group(0, ""), User(0, "", ""))
+
+    constructor() : this(0, BigDecimal(0), "", LocalDate(1900, 1, 1), false, Group(0, ""), User(0, "", ""))
+
+    fun isEmpty(): Boolean =
+            id == 0 &&
+                    amount == BigDecimal.ZERO &&
+                    description == "" &&
+                    date == LocalDate(1900, 1, 1) &&
+                    !common &&
+                    group == Group(0, "") &&
+                    payer == User(0, "", "")
+
 
     override fun describeContents() = 0
 

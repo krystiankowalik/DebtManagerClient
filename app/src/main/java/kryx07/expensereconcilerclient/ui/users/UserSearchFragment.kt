@@ -61,7 +61,7 @@ class UserSearchFragment : Fragment(), SearchView.OnQueryTextListener, UserSearc
     }
 
     override fun onUserClick(user: User) {
-        eventBus.postSticky(UpdatePayerEvent(user))
+        eventBus.postSticky(UpdateTransactionPayerEvent(user))
         fragmentManager.popBackStack()
 
     }

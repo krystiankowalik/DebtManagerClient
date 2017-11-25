@@ -14,7 +14,6 @@ import kryx07.expensereconcilerclient.R
 import kryx07.expensereconcilerclient.events.*
 import kryx07.expensereconcilerclient.model.users.Group
 import org.greenrobot.eventbus.EventBus
-import timber.log.Timber
 import javax.inject.Inject
 
 class GroupsFragment @Inject constructor() : Fragment(), GroupsMvpView, GroupsAdapter.OnGroupClickListener {
@@ -46,7 +45,7 @@ class GroupsFragment @Inject constructor() : Fragment(), GroupsMvpView, GroupsAd
 
     override fun onGroupClick(group: Group) {
         if (arguments.get(getString(R.string.fragment_action))==getString(R.string.update_group_from_detail_view)) {
-            eventBus.postSticky(UpdateGroupEvent(group))
+            eventBus.postSticky(UpdateTransactionGroupEvent(group))
             fragmentManager.popBackStack()
         }
     }

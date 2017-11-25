@@ -8,10 +8,19 @@ import kryx07.expensereconcilerclient.model.transactions.Transaction
 import org.greenrobot.eventbus.EventBus
 
 interface TransactionDetailMvpView : MvpView {
-    fun updateView(transaction: Transaction)
     fun popBackStack()
 
     fun showFragment(fragment: Fragment) = EventBus.getDefault().post(ReplaceFragmentEvent(fragment))
     fun showFragment(fragment: Fragment, bundle: Bundle) = EventBus.getDefault().post(ReplaceFragmentEvent(fragment, bundle))
     fun showFragment(fragment: Fragment, customTag: String) = EventBus.getDefault().post(ReplaceFragmentEvent(fragment, customTag))
+    fun getTransactionDetailBundle(): Bundle?
+
+    fun updateDateView(date: String)
+    fun updateAmountView(amount: String)
+    fun updateDescriptionView(description: String)
+    fun updatePayerView(payer: String)
+    fun updateGroupView(group: String)
+    fun updateCommonView(common: Boolean)
+
+
 }

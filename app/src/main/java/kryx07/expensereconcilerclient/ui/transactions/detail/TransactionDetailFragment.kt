@@ -2,37 +2,38 @@ package kryx07.expensereconcilerclient.ui.transactions.detail
 
 import android.content.Context
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.*
 import butterknife.ButterKnife
 import butterknife.OnClick
 import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.fragment_transaction_detail.*
-import kotlinx.android.synthetic.main.fragment_transaction_detail.view.*
 import kryx07.expensereconcilerclient.App
 import kryx07.expensereconcilerclient.R
-import kryx07.expensereconcilerclient.events.SetDrawerStatusEvent
-import kryx07.expensereconcilerclient.events.UpdateDateEvent
-import kryx07.expensereconcilerclient.events.UpdateGroupEvent
-import kryx07.expensereconcilerclient.events.UpdatePayerEvent
-import kryx07.expensereconcilerclient.model.transactions.Transaction
 import kryx07.expensereconcilerclient.ui.group.GroupsFragment
 import kryx07.expensereconcilerclient.ui.users.UserSearchFragment
-import kryx07.expensereconcilerclient.utils.StringUtilities
 import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.joda.time.LocalDate
-import java.math.BigDecimal
+import timber.log.Timber
 import javax.inject.Inject
 
 class TransactionDetailFragment : android.support.v4.app.Fragment(), TransactionDetailMvpView {
 
     @Inject lateinit var presenter: TransactionDetailPresenter
     @Inject lateinit var eventBus: EventBus
-    var transaction = Transaction()
 
     private val datePickerFragment = DatePickerFragment()
+
+    override fun onAttach(context: Context?) {
+        Timber.e("onAttach")
+        super.onAttach(context)
+        App.appComponent.inject(this)
+        presenter.attachView(this)
+    }
+
+    override fun onDetach() {
+        Timber.e("onDetach")
+        presenter.detach()
+        super.onDetach()
+    }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
@@ -42,16 +43,16 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
         setHasOptionsMenu(true)
 
         activity.dashboard_toolbar.title = getString(R.string.transaction_detail)
-        eventBus.post(SetDrawerStatusEvent(false))
 
-        addAmountChangedListener(view)
-        addDescriptionChangedListener(view)
+        /*addAmountChangedListener(view)
+        addDescriptionChangedListener(view)*/
+        Timber.e("onCreateView")
 
 
         return view
     }
 
-    private fun addAmountChangedListener(view: View) {
+    /*private fun addAmountChangedListener(view: View) {
         view.amount_input.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 try {
@@ -82,7 +83,7 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
             }
         })
 
-    }
+    }*/
 
     override fun popBackStack() {
         fragmentManager.popBackStack()
@@ -91,83 +92,34 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_transaction_detail, menu)
         menu.findItem(R.id.menu_save).setOnMenuItemClickListener({
-            presenter.saveTransaction(transaction)
+            presenter.saveTransaction()
             return@setOnMenuItemClickListener true
         })
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        Timber.e("onViewCreated")
         hideProgress()
-        //datePickerDialog = DatePickerDialog(context, this, 2017, 1, 1)
-        if (arguments != null) {
-            handleReceivedBundle(arguments)
-        } else {
-            initDate()
-        }
         super.onViewCreated(view, savedInstanceState)
     }
 
-    private fun handleReceivedBundle(bundle: Bundle?) {
-        if (bundle != null) {
-            val transaction = bundle.getParcelable<Transaction>(getString(R.string.clicked_transaction))
-            if (transaction != null) {
-                this.transaction = transaction
-            }
-        }
-    }
-
-    private fun initDate() {
-        transaction.date = LocalDate.now()
-        date_input.setText(StringUtilities.formatDate(transaction.date))
-    }
-
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        App.appComponent.inject(this)
-        eventBus.register(this)
-        presenter.attachView(this)
-    }
-
-    override fun onDetach() {
-        eventBus.unregister(this)
-        presenter.detach()
-        super.onDetach()
-    }
-
     override fun onResume() {
+        Timber.e("onResume")
         super.onResume()
-        updateView(transaction)
     }
 
-    override fun updateView(transaction: Transaction) {
-        date_input.setText(StringUtilities.formatDate(transaction.date))
-        amount_input.setText(transaction.amount.toString())
-        description_input.setText(transaction.description)
-        payer_input.setText(transaction.payer.username)
-        group_input.setText(transaction.group.name)
-        common_input.isChecked = transaction.common
-    }
+    override fun getTransactionDetailBundle(): Bundle? = arguments
 
-    @Subscribe
-    fun onUpdatePayerEvent(updatePayerEvent: UpdatePayerEvent) {
-        transaction.payer = updatePayerEvent.payer
-    }
 
-    @Subscribe
-    fun onUpdateGroupEvent(updateGroupEvent: UpdateGroupEvent) {
-        transaction.group = updateGroupEvent.group
-    }
-
-    @Subscribe
-    fun onDateUpdateEvent(updateDateEvent: UpdateDateEvent) {
-        transaction.date = updateDateEvent.date
-        view?.date_input?.setText(StringUtilities.formatDate(updateDateEvent.date))
-    }
 
     @OnClick(R.id.date_input)
-    fun onDateClick() = showCalendar()
+    fun onDateClick() = pickDate()
 
+    private fun pickDate() {
+        datePickerFragment.initialDate = presenter.getInitialTransactionDate()
+        datePickerFragment.show(fragmentManager, null)
+    }
 
     @OnClick(R.id.payer_input)
     fun onPayerClick() {
@@ -183,21 +135,22 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
         showFragment(GroupsFragment(), bundle)
     }
 
-    private fun showCalendar() {
-        datePickerFragment.initialDate = transaction.date
-        datePickerFragment.show(fragmentManager, null)
-    }
-
     override fun onStart() {
+        Timber.e("onStart")
         super.onStart()
-        presenter.start()
+         presenter.start()
     }
 
     @OnClick(R.id.common_input)
-    fun onCheckBoxClick() {
-        common_input.isChecked = !common_input.isChecked
-        transaction.common = common_input.isChecked
-    }
+    fun onCheckBoxClick() = presenter.toggleCommonInput()
+
+    override fun updateDateView(date: String) = date_input.setText(date)
+    override fun updateAmountView(amount: String) = amount_input.setText(amount)
+    override fun updateDescriptionView(description: String) = description_input.setText(description)
+    override fun updatePayerView(payer: String) = payer_input.setText(payer)
+    override fun updateGroupView(group: String) = group_input.setText(group)
+    override fun updateCommonView(common: Boolean) = common_input.setChecked(common)
+
 }
 
 

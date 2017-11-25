@@ -1,12 +1,11 @@
 package kryx07.expensereconcilerclient.ui.transactions.detail
 
-import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.widget.DatePicker
-import kryx07.expensereconcilerclient.events.UpdateDateEvent
+import kryx07.expensereconcilerclient.events.UpdateTransactionDateEvent
 import org.greenrobot.eventbus.EventBus
 import org.joda.time.LocalDate
 
@@ -30,6 +29,6 @@ class DatePickerFragment : DialogFragment(), DatePickerDialog.OnDateSetListener 
     }
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
-        EventBus.getDefault().postSticky(UpdateDateEvent(LocalDate(year, month + 1, dayOfMonth)))
+        EventBus.getDefault().postSticky(UpdateTransactionDateEvent(LocalDate(year, month + 1, dayOfMonth)))
     }
 }
