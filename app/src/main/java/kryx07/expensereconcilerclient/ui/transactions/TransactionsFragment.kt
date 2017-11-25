@@ -1,11 +1,9 @@
 package kryx07.expensereconcilerclient.ui.transactions
 
-import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import butterknife.ButterKnife
@@ -14,6 +12,7 @@ import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.fragment_transactions.view.*
 import kryx07.expensereconcilerclient.App
 import kryx07.expensereconcilerclient.R
+import kryx07.expensereconcilerclient.R.string.transactions
 import kryx07.expensereconcilerclient.base.fragment.RefreshableFragment
 import kryx07.expensereconcilerclient.events.*
 import kryx07.expensereconcilerclient.model.transactions.Transaction
@@ -69,6 +68,7 @@ class TransactionsFragment : RefreshableFragment(), TransactionsMvpView {
 
     override fun onTransactionLongClick(position: Int): Boolean {
         Timber.e("onTransactionLongClick")
+        Timber.e("Position: " + position)
         if (actionMode == null) {
             this.actionMode = (activity as AppCompatActivity).startSupportActionMode(actionModeCallback)
         }
@@ -78,6 +78,10 @@ class TransactionsFragment : RefreshableFragment(), TransactionsMvpView {
     }
 
     private fun toggleSelection(position: Int) {
+        Timber.e("All items: ")
+        for (i in 0 until adapter.transactions.size) {
+            Timber.e(i.toString() + adapter.transactions[i])
+        }
         adapter.toggleSelection(position)
 
         val count = adapter.selectedItemCount
@@ -151,10 +155,11 @@ class TransactionsFragment : RefreshableFragment(), TransactionsMvpView {
         }
 
         override fun onActionItemClicked(mode: android.support.v7.view.ActionMode, item: MenuItem): Boolean {
-            when (item.getItemId()) {
+            when (item.itemId) {
                 R.id.delete_item -> {
-                    adapter.removeItems(adapter.getSelectedItems())
-                    presenter.removeTransactions(adapter.getTransactionsFromPositions(adapter.getSelectedItems()))
+                    val transactionsToRemove = adapter.getTransactionsFromPositions(adapter.getSelectedItemsPositions())
+                    adapter.removeItems(adapter.getSelectedItemsPositions())
+                    presenter.removeTransactions(transactionsToRemove)
                     mode.finish()
                     return true
                 }

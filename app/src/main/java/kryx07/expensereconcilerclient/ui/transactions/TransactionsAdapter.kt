@@ -40,6 +40,7 @@ class TransactionsAdapter(private val transactionsView: TransactionsMvpView) : S
     fun removeItem(position: Int) {
         transactions.removeAt(position)
         notifyItemRemoved(position)
+        notifyItemRangeChanged(position,transactions.size-position)
     }
 
     fun getTransactionsFromPositions(positions: List<Int>): List<Transaction> {
@@ -52,8 +53,10 @@ class TransactionsAdapter(private val transactionsView: TransactionsMvpView) : S
         // Reverse-sort the list
         Collections.sort(positions) { lhs, rhs -> rhs!! - lhs!! }
 
+        positions.forEach({ p -> removeItem(p) })
+
         // Split the list in ranges
-        while (!positions.isEmpty()) {
+        /*while (!positions.isEmpty()) {
             if (positions.size == 1) {
                 removeItem(positions[0])
                 positions.removeAt(0)
@@ -73,7 +76,7 @@ class TransactionsAdapter(private val transactionsView: TransactionsMvpView) : S
                     positions.removeAt(0)
                 }
             }
-        }
+        }*/
     }
 
     private fun removeRange(positionStart: Int, itemCount: Int) {
@@ -92,7 +95,8 @@ class TransactionsAdapter(private val transactionsView: TransactionsMvpView) : S
             itemView.isLongClickable = true
             itemView.setOnLongClickListener { transactionsView.onTransactionLongClick(position) }
 
-            itemView.material_initials_text.text = transaction.payer.username.toUpperCase().substring(0, 2)
+//            itemView.material_initials_text.text = transaction.payer.username.toUpperCase().substring(0, 2)
+            itemView.material_initials_text.text = position.toString()
             itemView.date_text.text = transaction.date.toString()
             itemView.description_text.text = transaction.description
             itemView.amount.text = StringUtilities.formatCurrency(transaction.amount, itemView.context.getString(R.string.currency))

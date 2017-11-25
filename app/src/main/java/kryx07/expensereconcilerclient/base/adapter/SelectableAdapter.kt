@@ -7,7 +7,7 @@ import java.util.ArrayList
 
 abstract class SelectableAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Adapter<VH>() {
 
-    private val selectedItems: SparseBooleanArray
+    private val selectedItems: SparseBooleanArray = SparseBooleanArray()
 
     /**
      * Count the selected items
@@ -17,10 +17,6 @@ abstract class SelectableAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Ad
     val selectedItemCount: Int
         get() = selectedItems.size()
 
-    init {
-        selectedItems = SparseBooleanArray()
-    }
-
     /**
      * Indicates if the item at position position is selected
      *
@@ -28,7 +24,7 @@ abstract class SelectableAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Ad
      * @return true if the item is selected, false otherwise
      */
     fun isSelected(position: Int): Boolean {
-        return getSelectedItems().contains(position)
+        return getSelectedItemsPositions().contains(position)
     }
 
     /**
@@ -49,7 +45,7 @@ abstract class SelectableAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Ad
      * Clear the selection status for all items
      */
     fun clearSelection() {
-        val selection = getSelectedItems()
+        val selection = getSelectedItemsPositions()
         selectedItems.clear()
         for (i in selection) {
             notifyItemChanged(i)
@@ -61,7 +57,7 @@ abstract class SelectableAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Ad
      *
      * @return List of selected items ids
      */
-    fun getSelectedItems(): MutableList<Int> {
+    fun getSelectedItemsPositions(): MutableList<Int> {
         val items = ArrayList<Int>(selectedItems.size())
         for (i in 0 until selectedItems.size()) {
             items.add(selectedItems.keyAt(i))
