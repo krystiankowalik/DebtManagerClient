@@ -1,42 +1,38 @@
 package kryx07.expensereconcilerclient.ui.transactions.detail
 
-import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
-import android.widget.DatePicker
 import butterknife.ButterKnife
 import butterknife.OnClick
 import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.fragment_transaction_detail.*
 import kotlinx.android.synthetic.main.fragment_transaction_detail.view.*
-import kotlinx.android.synthetic.main.fragment_transactions.view.*
 import kryx07.expensereconcilerclient.App
 import kryx07.expensereconcilerclient.R
-import kryx07.expensereconcilerclient.events.*
+import kryx07.expensereconcilerclient.events.SetDrawerStatusEvent
+import kryx07.expensereconcilerclient.events.UpdateDateEvent
+import kryx07.expensereconcilerclient.events.UpdateGroupEvent
+import kryx07.expensereconcilerclient.events.UpdatePayerEvent
 import kryx07.expensereconcilerclient.model.transactions.Transaction
 import kryx07.expensereconcilerclient.ui.group.GroupsFragment
-import kryx07.expensereconcilerclient.ui.transactions.TransactionsAdapter
 import kryx07.expensereconcilerclient.ui.users.UserSearchFragment
 import kryx07.expensereconcilerclient.utils.StringUtilities
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
-import org.joda.time.DateTime
 import org.joda.time.LocalDate
 import java.math.BigDecimal
 import javax.inject.Inject
 
-class TransactionDetailFragment : android.support.v4.app.Fragment(), TransactionDetailMvpView, DatePickerDialog.OnDateSetListener {
+class TransactionDetailFragment : android.support.v4.app.Fragment(), TransactionDetailMvpView {
 
     @Inject lateinit var presenter: TransactionDetailPresenter
-    private lateinit var adapter: TransactionsAdapter
     @Inject lateinit var eventBus: EventBus
-    private lateinit var datePickerDialog: DatePickerDialog
-
     var transaction = Transaction()
+
+    private val datePickerFragment = DatePickerFragment()
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
@@ -103,7 +99,7 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         hideProgress()
-        datePickerDialog = DatePickerDialog(context, this, 2017, 1, 1)
+        //datePickerDialog = DatePickerDialog(context, this, 2017, 1, 1)
         if (arguments != null) {
             handleReceivedBundle(arguments)
         } else {
@@ -163,6 +159,12 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
         transaction.group = updateGroupEvent.group
     }
 
+    @Subscribe
+    fun onDateUpdateEvent(updateDateEvent: UpdateDateEvent) {
+        transaction.date = updateDateEvent.date
+        view?.date_input?.setText(StringUtilities.formatDate(updateDateEvent.date))
+    }
+
     @OnClick(R.id.date_input)
     fun onDateClick() = showCalendar()
 
@@ -181,20 +183,9 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
         showFragment(GroupsFragment(), bundle)
     }
 
-
     private fun showCalendar() {
-        datePickerDialog.updateDate(transaction.date.year, transaction.date.monthOfYear - 1, transaction.date.dayOfMonth)
-        datePickerDialog.show()
-    }
-
-
-    override fun onDateSet(p0: DatePicker, year: Int, month: Int, day: Int) {
-        val date = presenter.getDateOf(year, month, day)
-        date_input
-                .setText(StringUtilities
-                        .formatDate(date))
-        transaction.date = LocalDate(date)
-
+        datePickerFragment.initialDate = transaction.date
+        datePickerFragment.show(fragmentManager, null)
     }
 
     override fun onStart() {
@@ -202,21 +193,11 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
         presenter.start()
     }
 
-    private fun showFragment(fragment: Fragment) = eventBus.post(ReplaceFragmentEvent(fragment))
-    private fun showFragment(fragment: Fragment, bundle: Bundle) = eventBus.post(ReplaceFragmentEvent(fragment, bundle))
-    private fun showFragment(fragment: Fragment, customTag: String) = eventBus.post(ReplaceFragmentEvent(fragment, customTag))
-
-    override fun showProgress() = EventBus.getDefault().post(ShowProgressEvent())
-
-    override fun hideProgress() = EventBus.getDefault().post(HideProgressEvent())
-
     @OnClick(R.id.common_input)
     fun onCheckBoxClick() {
         common_input.isChecked = !common_input.isChecked
         transaction.common = common_input.isChecked
     }
-
-
 }
 
 

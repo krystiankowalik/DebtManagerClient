@@ -2,10 +2,11 @@ package kryx07.expensereconcilerclient.ui.transactions
 
 import android.os.Bundle
 import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import butterknife.ButterKnife
 import butterknife.OnClick
 import kotlinx.android.synthetic.main.activity_dashboard.*
@@ -13,7 +14,8 @@ import kotlinx.android.synthetic.main.fragment_transactions.view.*
 import kryx07.expensereconcilerclient.App
 import kryx07.expensereconcilerclient.R
 import kryx07.expensereconcilerclient.base.fragment.RefreshableFragment
-import kryx07.expensereconcilerclient.events.*
+import kryx07.expensereconcilerclient.events.ReplaceFragmentEvent
+import kryx07.expensereconcilerclient.events.SetDrawerStatusEvent
 import kryx07.expensereconcilerclient.model.transactions.Transaction
 import kryx07.expensereconcilerclient.ui.transactions.detail.TransactionDetailFragment
 import org.greenrobot.eventbus.EventBus
@@ -22,7 +24,6 @@ import javax.inject.Inject
 
 
 class TransactionsFragment : RefreshableFragment(), TransactionsMvpView {
-
 
     @Inject lateinit var presenter: TransactionsPresenter
     private lateinit var adapter: TransactionsAdapter
@@ -86,7 +87,6 @@ class TransactionsFragment : RefreshableFragment(), TransactionsMvpView {
             this.actionMode = (activity as AppCompatActivity).startSupportActionMode(actionModeCallback)
         }
         toggleTransactionSelection(position)
-
         return true
     }
 
@@ -127,9 +127,7 @@ class TransactionsFragment : RefreshableFragment(), TransactionsMvpView {
         actionMode = null
     }
 
-    override fun onRefresh() {
-        presenter.requestTransactions()
-    }
+    override fun onRefresh() = presenter.requestTransactions()
 
     @OnClick(R.id.fab)
     fun addTransactionClick() {
@@ -148,8 +146,4 @@ class TransactionsFragment : RefreshableFragment(), TransactionsMvpView {
         Timber.e(context.getString(int))
         Snackbar.make(view!!, context.getString(int), Snackbar.LENGTH_LONG).show()
     }
-
-
 }
-
-
