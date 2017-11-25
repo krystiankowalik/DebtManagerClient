@@ -19,7 +19,7 @@ class Transaction(
         var group: Group,
         var payer: User
 
-) : Serializable, Parcelable {
+) : Serializable,Parcelable {
     constructor(source: Parcel) : this(
             source.readInt(),
             source.readSerializable() as BigDecimal,
@@ -55,6 +55,5 @@ class Transaction(
             override fun newArray(size: Int): Array<Transaction?> = arrayOfNulls(size)
         }
     }
-
 
 }

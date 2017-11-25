@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:id="@+id/card_view_item_recycler_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/card_margin_vertical"
+    android:layout_marginEnd="@dimen/card_margin_horizontal"
+    android:layout_marginStart="@dimen/card_margin_horizontal"
+    android:layout_marginTop="@dimen/card_margin_vertical"
+    android:background="@color/white"
+    android:foreground="?attr/selectableItemBackground"
+    card_view:cardCornerRadius="@dimen/card_recycler_corner_radius"
+    card_view:cardElevation="@dimen/card_recycler_elevation">
+
+    <View
+        android:id="@+id/transaction_item_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/light_gray"
+        android:visibility="invisible" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingEnd="@dimen/no_margin"
+        android:paddingStart="@dimen/margin_item_adapter">
+
+        <RelativeLayout
+            android:id="@+id/initials_circle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/text_margin"
+            android:background="@drawable/round"
+            android:backgroundTint="@color/colorPrimary">
+
+            <TextView
+                android:id="@+id/material_initials_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:textColor="@color/white"
+                android:textSize="@dimen/material_initials_text_size" />
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/initials_circle">
+
+            <TextView
+                android:id="@+id/date_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/margin_item_adapter"
+                android:text="Date" />
+
+            <TextView
+                android:id="@+id/amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_toEndOf="@id/date_text"
+                android:gravity="end"
+                android:padding="@dimen/margin_item_adapter"
+                android:text="123.432 USD"
+                android:textColor="@color/colorPrimary" />
+
+
+            <TextView
+                android:id="@+id/description_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/date_text"
+                android:paddingEnd="@dimen/margin_item_adapter"
+                android:paddingStart="@dimen/margin_item_adapter"
+                android:text="Coca cola light"
+                android:textAllCaps="true"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/group_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/description_text"
+                android:padding="@dimen/margin_item_adapter"
+                android:text="Coca cola light"
+                android:textStyle="italic" />
+
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+
+</android.support.v7.widget.CardView>

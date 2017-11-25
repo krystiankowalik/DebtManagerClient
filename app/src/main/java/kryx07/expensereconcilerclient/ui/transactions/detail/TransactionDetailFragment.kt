@@ -13,6 +13,7 @@ import butterknife.OnClick
 import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.fragment_transaction_detail.*
 import kotlinx.android.synthetic.main.fragment_transaction_detail.view.*
+import kotlinx.android.synthetic.main.fragment_transactions.view.*
 import kryx07.expensereconcilerclient.App
 import kryx07.expensereconcilerclient.R
 import kryx07.expensereconcilerclient.events.*
@@ -23,10 +24,10 @@ import kryx07.expensereconcilerclient.ui.users.UserSearchFragment
 import kryx07.expensereconcilerclient.utils.StringUtilities
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import org.joda.time.DateTime
 import org.joda.time.LocalDate
 import java.math.BigDecimal
 import javax.inject.Inject
-
 
 class TransactionDetailFragment : android.support.v4.app.Fragment(), TransactionDetailMvpView, DatePickerDialog.OnDateSetListener {
 
@@ -49,6 +50,7 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
 
         addAmountChangedListener(view)
         addDescriptionChangedListener(view)
+
 
         return view
     }
@@ -186,10 +188,14 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
     }
 
 
-    override fun onDateSet(p0: DatePicker, year: Int, month: Int, day: Int) =
-            date_input
-                    .setText(StringUtilities
-                            .formatDate(presenter.getDateOf(year, month, day)))
+    override fun onDateSet(p0: DatePicker, year: Int, month: Int, day: Int) {
+        val date = presenter.getDateOf(year, month, day)
+        date_input
+                .setText(StringUtilities
+                        .formatDate(date))
+        transaction.date = LocalDate(date)
+
+    }
 
     override fun onStart() {
         super.onStart()
@@ -212,4 +218,5 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
 
 
 }
+
 

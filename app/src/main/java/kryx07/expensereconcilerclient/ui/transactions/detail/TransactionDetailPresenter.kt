@@ -74,7 +74,7 @@ class TransactionDetailPresenter @Inject constructor(var apiClient: ApiClient,
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ receivedTransaction ->
-                 //   view.updateView(receivedTransaction)
+                 //   transactionsView.updateView(receivedTransaction)
                     Timber.e("Received after adding new transaction: " + receivedTransaction)
                     view.popBackStack()
                 })
@@ -86,7 +86,7 @@ class TransactionDetailPresenter @Inject constructor(var apiClient: ApiClient,
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ receivedTransaction ->
-                //    view.updateView(receivedTransaction)
+                //    transactionsView.updateView(receivedTransaction)
                     Timber.e("Received after update: " + receivedTransaction)
                     view.popBackStack()
                 })

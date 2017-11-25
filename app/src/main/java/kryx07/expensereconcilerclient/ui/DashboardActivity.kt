@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentTransaction
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
+import android.view.ContextMenu
 import android.view.View
 import butterknife.ButterKnife
 import kotlinx.android.synthetic.main.activity_dashboard.*
@@ -42,13 +43,17 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
         setupNavigationDrawer()
 
         if (savedInstanceState == null) {
-//                 showFragment(TransactionsFragment())
+                 showFragment(TransactionsFragment())
         }
 
         //to be replaced with login!!!
         sharedPreferencesManager.write(getString(R.string.my_user), "2")
 
+
+
     }
+
+
 
     override fun onDestroy() {
         eventBus.unregister(this)
@@ -192,6 +197,8 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
             Timber.e("I get that:" + setActivityTitleEvent.title)
             supportActionBar?.title = setActivityTitleEvent.title
         }
+
+
 
 
     }

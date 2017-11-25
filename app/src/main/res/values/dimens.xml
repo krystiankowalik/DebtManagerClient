@@ -2,4 +2,11 @@
 <resources>
     <dimen name="enlarged_text">15sp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="card_margin_vertical">2dp</dimen>
+    <dimen name="card_margin_horizontal">8dp</dimen>
+    <dimen name="text_margin">8dp</dimen>
+    <dimen name="recycler_item_margin">8dp</dimen>
+    <dimen name="material_initials_text_size">25sp</dimen>
+    <dimen name="margin_item_adapter">8dp</dimen>
+    <dimen name="no_margin">0dp</dimen>
 </resources>

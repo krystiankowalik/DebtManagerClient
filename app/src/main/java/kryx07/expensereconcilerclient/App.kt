@@ -1,7 +1,6 @@
 package kryx07.expensereconcilerclient
 
 import android.app.Application
-import android.arch.persistence.room.Room
 
 import kryx07.expensereconcilerclient.di.AppComponent
 import kryx07.expensereconcilerclient.di.AppModule

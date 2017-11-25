@@ -40,7 +40,7 @@ class PayablesPresenter @Inject constructor(var apiClient: ApiClient,
                 if (response!!.isSuccessful) {
                     Timber.e(response.body().toString())
                     val payables = response.body()
-                    view.updateData(payables)
+                    transactionsView.updateData(payables)
                     setTotals(payables)
                     payables.payables.forEach { p ->
                         database.payablesDao().insert(p)
@@ -83,7 +83,7 @@ class PayablesPresenter @Inject constructor(var apiClient: ApiClient,
         }*//*
 
 
-        view.updateTotals(myReceivables, myPayables)
+        transactionsView.updateTotals(myReceivables, myPayables)
     }
 
     private fun showSnackAndLog() {

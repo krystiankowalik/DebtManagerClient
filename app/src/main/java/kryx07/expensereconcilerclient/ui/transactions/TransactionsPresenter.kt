@@ -54,5 +54,10 @@ class TransactionsPresenter @Inject constructor(private var apiClient: ApiClient
         view.hideProgress()
     }
 
+    fun removeTransactions(transactions: List<Transaction>) {
+        Timber.e("Presenter is removing transaction from the server...")
+        Timber.e("Transactions to remove: " + transactions)
+    }
+
 
 }

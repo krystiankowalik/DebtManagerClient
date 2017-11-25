@@ -1,14 +1,13 @@
 package kryx07.expensereconcilerclient.ui.transactions
 
+import android.graphics.Color
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
+import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutManager
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import butterknife.BindView
+import android.view.*
 import butterknife.ButterKnife
 import butterknife.OnClick
 import kotlinx.android.synthetic.main.activity_dashboard.*
@@ -24,12 +23,17 @@ import timber.log.Timber
 import javax.inject.Inject
 
 
-class TransactionsFragment : RefreshableFragment(), TransactionsMvpView, TransactionsAdapter.TransactionClickListener {
+class TransactionsFragment : RefreshableFragment(), TransactionsMvpView {
 
 
     @Inject lateinit var presenter: TransactionsPresenter
     private lateinit var adapter: TransactionsAdapter
     @Inject lateinit var eventBus: EventBus
+
+
+    var actionMode: android.support.v7.view.ActionMode? = null
+
+    private var selectionMode = false
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
@@ -37,23 +41,57 @@ class TransactionsFragment : RefreshableFragment(), TransactionsMvpView, Transac
         super.onCreateView(inflater, view.transactions_swipe_refresher, savedInstanceState)
         ButterKnife.bind(this, view)
         App.appComponent.inject(this)
-        setupAdapter(view)
         presenter.attachView(this)
+        setupAdapter(view)
 
         activity.dashboard_toolbar.title = getString(R.string.my_transactions)
+        registerForContextMenu(view.transactions_recycler)
 
         eventBus.post(SetDrawerStatusEvent(false))
 
         return view
     }
 
-    override fun onTransactionClick(transaction: Transaction) {
-        showProgress()
-        val transactionDetailFragment = TransactionDetailFragment()
-        val bundle = Bundle()
-        bundle.putParcelable(getString(R.string.clicked_transaction), transaction)
-        transactionDetailFragment.arguments = bundle
-        eventBus.post(ReplaceFragmentEvent(transactionDetailFragment))
+    override fun onTransactionClick(position: Int) {
+        Timber.e("onTransactionClick")
+        Timber.e(selectionMode.toString())
+        if (actionMode != null) {
+            onTransactionLongClick(position)
+        } else {
+            showProgress()
+            val transactionDetailFragment = TransactionDetailFragment()
+            val bundle = Bundle()
+            bundle.putParcelable(getString(R.string.clicked_transaction), adapter.transactions[position])
+            transactionDetailFragment.arguments = bundle
+            eventBus.post(ReplaceFragmentEvent(transactionDetailFragment))
+        }
+    }
+
+    override fun onTransactionLongClick(position: Int): Boolean {
+        Timber.e("onTransactionLongClick")
+        if (actionMode == null) {
+            this.actionMode = (activity as AppCompatActivity).startSupportActionMode(actionModeCallback)
+        }
+        toggleSelection(position)
+
+        return true
+    }
+
+    private fun toggleSelection(position: Int) {
+        adapter.toggleSelection(position)
+
+        val count = adapter.selectedItemCount
+
+        if (count == 0) {
+            actionMode?.finish()
+        } else {
+            if (count == 1) {
+                actionMode?.title = count.toString() + " " + getString(R.string.transaction_selected)
+            } else {
+                actionMode?.title = count.toString() + " " + getString(R.string.transactions_selected)
+            }
+            actionMode?.invalidate()
+        }
     }
 
     private fun setupAdapter(view: View) {
@@ -67,8 +105,6 @@ class TransactionsFragment : RefreshableFragment(), TransactionsMvpView, Transac
         presenter.start()
     }
 
-
-
     override fun onDestroyView() {
         presenter.detach()
         super.onDestroyView()
@@ -77,7 +113,6 @@ class TransactionsFragment : RefreshableFragment(), TransactionsMvpView, Transac
     override fun updateData(transactions: List<Transaction>) = adapter.updateData(transactions)
 
     override fun onRefresh() = presenter.requestTransactions()
-
 
     @OnClick(R.id.fab)
     fun addTransactionClick() {
@@ -100,6 +135,42 @@ class TransactionsFragment : RefreshableFragment(), TransactionsMvpView, Transac
     override fun showSnackAndLog(int: Int) {
         Timber.e(context.getString(int))
         Snackbar.make(view!!, context.getString(int), Snackbar.LENGTH_LONG).show()
+    }
+
+    val actionModeCallback = object : android.support.v7.view.ActionMode.Callback {
+
+        override fun onCreateActionMode(mode: android.support.v7.view.ActionMode, menu: Menu): Boolean {
+            mode.menuInflater.inflate(R.menu.menu_select_item, menu)
+            view?.fab?.visibility = View.GONE
+            view?.transactions_swipe_refresher?.isEnabled = false
+            return true
+        }
+
+        override fun onPrepareActionMode(mode: android.support.v7.view.ActionMode, menu: Menu): Boolean {
+            return false
+        }
+
+        override fun onActionItemClicked(mode: android.support.v7.view.ActionMode, item: MenuItem): Boolean {
+            when (item.getItemId()) {
+                R.id.delete_item -> {
+                    adapter.removeItems(adapter.getSelectedItems())
+                    presenter.removeTransactions(adapter.getTransactionsFromPositions(adapter.getSelectedItems()))
+                    mode.finish()
+                    return true
+                }
+
+                else -> return false
+            }
+        }
+
+        override fun onDestroyActionMode(mode: android.support.v7.view.ActionMode) {
+            view?.fab?.visibility = View.VISIBLE
+            view?.transactions_swipe_refresher?.isEnabled = true
+            adapter.clearSelection()
+            actionMode = null
+        }
+
+
     }
 }
 
