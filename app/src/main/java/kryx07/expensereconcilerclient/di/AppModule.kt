@@ -5,6 +5,7 @@ import dagger.Provides
 import io.objectbox.BoxStore
 import kryx07.expensereconcilerclient.model.users.MyObjectBox
 import kryx07.expensereconcilerclient.network.ApiClient
+import kryx07.expensereconcilerclient.ui.transactions.TransactionsMvpView
 import kryx07.expensereconcilerclient.utils.SharedPreferencesManager
 import org.greenrobot.eventbus.EventBus
 import javax.inject.Singleton
@@ -36,6 +37,7 @@ class AppModule(private val context: Context) {
     @Provides
     @Singleton
     fun providesEventBus(): EventBus = EventBus.getDefault()
+
 
 /*
     @Provides @Singleton

@@ -12,7 +12,6 @@ import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.fragment_transactions.view.*
 import kryx07.expensereconcilerclient.App
 import kryx07.expensereconcilerclient.R
-import kryx07.expensereconcilerclient.R.string.transactions
 import kryx07.expensereconcilerclient.base.fragment.RefreshableFragment
 import kryx07.expensereconcilerclient.events.*
 import kryx07.expensereconcilerclient.model.transactions.Transaction
@@ -29,10 +28,9 @@ class TransactionsFragment : RefreshableFragment(), TransactionsMvpView {
     private lateinit var adapter: TransactionsAdapter
     @Inject lateinit var eventBus: EventBus
 
-
-    var actionMode: android.support.v7.view.ActionMode? = null
-
-    private var selectionMode = false
+    private var actionMode: android.support.v7.view.ActionMode? = null
+    private var actionModeCallback: android.support.v7.view.ActionMode.Callback =
+            TransactionSelectionAction(this)
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
@@ -45,57 +43,9 @@ class TransactionsFragment : RefreshableFragment(), TransactionsMvpView {
 
         activity.dashboard_toolbar.title = getString(R.string.my_transactions)
         registerForContextMenu(view.transactions_recycler)
-
         eventBus.post(SetDrawerStatusEvent(false))
 
         return view
-    }
-
-    override fun onTransactionClick(position: Int) {
-        Timber.e("onTransactionClick")
-        Timber.e(selectionMode.toString())
-        if (actionMode != null) {
-            onTransactionLongClick(position)
-        } else {
-            showProgress()
-            val transactionDetailFragment = TransactionDetailFragment()
-            val bundle = Bundle()
-            bundle.putParcelable(getString(R.string.clicked_transaction), adapter.transactions[position])
-            transactionDetailFragment.arguments = bundle
-            eventBus.post(ReplaceFragmentEvent(transactionDetailFragment))
-        }
-    }
-
-    override fun onTransactionLongClick(position: Int): Boolean {
-        Timber.e("onTransactionLongClick")
-        Timber.e("Position: " + position)
-        if (actionMode == null) {
-            this.actionMode = (activity as AppCompatActivity).startSupportActionMode(actionModeCallback)
-        }
-        toggleSelection(position)
-
-        return true
-    }
-
-    private fun toggleSelection(position: Int) {
-        Timber.e("All items: ")
-        for (i in 0 until adapter.transactions.size) {
-            Timber.e(i.toString() + adapter.transactions[i])
-        }
-        adapter.toggleSelection(position)
-
-        val count = adapter.selectedItemCount
-
-        if (count == 0) {
-            actionMode?.finish()
-        } else {
-            if (count == 1) {
-                actionMode?.title = count.toString() + " " + getString(R.string.transaction_selected)
-            } else {
-                actionMode?.title = count.toString() + " " + getString(R.string.transactions_selected)
-            }
-            actionMode?.invalidate()
-        }
     }
 
     private fun setupAdapter(view: View) {
@@ -114,9 +64,72 @@ class TransactionsFragment : RefreshableFragment(), TransactionsMvpView {
         super.onDestroyView()
     }
 
-    override fun updateData(transactions: List<Transaction>) = adapter.updateData(transactions)
+    override fun onTransactionClick(position: Int) {
+        if (actionMode != null) {
+            onTransactionLongClick(position)
+        } else {
+            showTransactionDetail(position)
+        }
+    }
 
-    override fun onRefresh() = presenter.requestTransactions()
+    private fun showTransactionDetail(position: Int) {
+        showProgress()
+        val transactionDetailFragment = TransactionDetailFragment()
+        val bundle = Bundle()
+        bundle.putParcelable(getString(R.string.clicked_transaction), adapter.transactions[position])
+        transactionDetailFragment.arguments = bundle
+        eventBus.post(ReplaceFragmentEvent(transactionDetailFragment))
+    }
+
+    override fun onTransactionLongClick(position: Int): Boolean {
+        if (actionMode == null) {
+            this.actionMode = (activity as AppCompatActivity).startSupportActionMode(actionModeCallback)
+        }
+        toggleTransactionSelection(position)
+
+        return true
+    }
+
+    private fun toggleTransactionSelection(position: Int) {
+        adapter.toggleSelection(position)
+        displaySelectedCountOnActionBar()
+    }
+
+    private fun displaySelectedCountOnActionBar() {
+        val count = adapter.selectedItemCount
+        if (count == 0) {
+            actionMode?.finish()
+        } else {
+            if (count == 1) {
+                actionMode?.title = count.toString() + " " + getString(R.string.transaction_selected)
+            } else {
+                actionMode?.title = count.toString() + " " + getString(R.string.transactions_selected)
+            }
+            actionMode?.invalidate()
+        }
+    }
+
+    override fun onCreateActionMode() {
+        view?.fab?.visibility = View.GONE
+        view?.transactions_swipe_refresher?.isEnabled = false
+    }
+
+    override fun onDeleteActionClicked() {
+        val transactionsToRemove = adapter.getTransactionsFromPositions(adapter.getSelectedItemsPositions())
+        adapter.removeItems(adapter.getSelectedItemsPositions())
+        presenter.removeTransactions(transactionsToRemove)
+    }
+
+    override fun onDestroyActionMode() {
+        view?.fab?.visibility = View.VISIBLE
+        view?.transactions_swipe_refresher?.isEnabled = true
+        adapter.clearSelection()
+        actionMode = null
+    }
+
+    override fun onRefresh() {
+        presenter.requestTransactions()
+    }
 
     @OnClick(R.id.fab)
     fun addTransactionClick() {
@@ -124,12 +137,7 @@ class TransactionsFragment : RefreshableFragment(), TransactionsMvpView {
         showFragment(TransactionDetailFragment())
     }
 
-    private fun showFragment(fragment: Fragment) = eventBus.post(ReplaceFragmentEvent(fragment))
-    override fun showProgress() = EventBus.getDefault().post(ShowProgressEvent())
-    override fun hideProgress() {
-        EventBus.getDefault().post(HideProgressEvent())
-        EventBus.getDefault().post(HideRefresherEvent())
-    }
+    override fun updateData(transactions: List<Transaction>) = adapter.updateData(transactions)
 
     override fun showSnackAndLog(string: String) {
         Timber.e(string)
@@ -141,41 +149,7 @@ class TransactionsFragment : RefreshableFragment(), TransactionsMvpView {
         Snackbar.make(view!!, context.getString(int), Snackbar.LENGTH_LONG).show()
     }
 
-    val actionModeCallback = object : android.support.v7.view.ActionMode.Callback {
 
-        override fun onCreateActionMode(mode: android.support.v7.view.ActionMode, menu: Menu): Boolean {
-            mode.menuInflater.inflate(R.menu.menu_select_item, menu)
-            view?.fab?.visibility = View.GONE
-            view?.transactions_swipe_refresher?.isEnabled = false
-            return true
-        }
-
-        override fun onPrepareActionMode(mode: android.support.v7.view.ActionMode, menu: Menu): Boolean {
-            return false
-        }
-
-        override fun onActionItemClicked(mode: android.support.v7.view.ActionMode, item: MenuItem): Boolean {
-            when (item.itemId) {
-                R.id.delete_item -> {
-                    val transactionsToRemove = adapter.getTransactionsFromPositions(adapter.getSelectedItemsPositions())
-                    adapter.removeItems(adapter.getSelectedItemsPositions())
-                    presenter.removeTransactions(transactionsToRemove)
-                    mode.finish()
-                    return true
-                }
-
-                else -> return false
-            }
-        }
-
-        override fun onDestroyActionMode(mode: android.support.v7.view.ActionMode) {
-            view?.fab?.visibility = View.VISIBLE
-            view?.transactions_swipe_refresher?.isEnabled = true
-            adapter.clearSelection()
-            actionMode = null
-        }
-
-
-    }
 }
+
 

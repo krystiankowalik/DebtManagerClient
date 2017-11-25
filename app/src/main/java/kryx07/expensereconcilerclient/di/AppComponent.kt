@@ -4,6 +4,7 @@ package kryx07.expensereconcilerclient.di
 //import kryx07.expensereconcilerclient.ui.payables.PayablesFragment
 import kryx07.expensereconcilerclient.ui.DashboardActivity
 import kryx07.expensereconcilerclient.ui.group.GroupsFragment
+import kryx07.expensereconcilerclient.ui.transactions.TransactionSelectionAction
 import kryx07.expensereconcilerclient.ui.transactions.TransactionsFragment
 import kryx07.expensereconcilerclient.ui.transactions.detail.TransactionDetailFragment
 import kryx07.expensereconcilerclient.ui.users.UserSearchFragment
@@ -22,6 +23,8 @@ interface AppComponent {
     fun inject(userSearchFragment: UserSearchFragment)
 
     fun inject(groupsFragment: GroupsFragment)
+
+    fun inject(transactionSelectionAction: TransactionSelectionAction)
     /*void inject(LoginActivity loginActivity);
 
     void inject(DashboardActivity mainActivity);
