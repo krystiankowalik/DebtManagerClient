@@ -3,13 +3,16 @@ package kryx07.expensereconcilerclient.ui.users
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kryx07.expensereconcilerclient.base.presenter.BasePresenter
+import kryx07.expensereconcilerclient.events.UpdateTransactionPayerEvent
 import kryx07.expensereconcilerclient.model.users.User
 import kryx07.expensereconcilerclient.network.ApiClient
+import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 
-class UserSearchPresenter @Inject constructor() : BasePresenter<UserSearchMvpView>() {
+class UserSearchPresenter @Inject constructor(private val eventBus: EventBus,
+                                              private val apiClient: ApiClient
+                                              ) : BasePresenter<UserSearchMvpView>() {
 
-    @Inject lateinit var apiClient: ApiClient
     private var usersList = arrayListOf<User>()
 
 
@@ -17,7 +20,7 @@ class UserSearchPresenter @Inject constructor() : BasePresenter<UserSearchMvpVie
         requestUsers()
     }
 
-    fun requestUsers() {
+    private fun requestUsers() {
 
         view.showProgress()
 
@@ -46,5 +49,10 @@ class UserSearchPresenter @Inject constructor() : BasePresenter<UserSearchMvpVie
             }
         }
         return filteredUsers
+    }
+
+    fun handleUserClick(user: User) {
+        eventBus.postSticky(UpdateTransactionPayerEvent(user))
+        view.popBackStack()
     }
 }

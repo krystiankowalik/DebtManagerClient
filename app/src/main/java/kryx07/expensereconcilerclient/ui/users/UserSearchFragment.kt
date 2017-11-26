@@ -20,11 +20,8 @@ class UserSearchFragment : Fragment(), SearchView.OnQueryTextListener, UserSearc
 
 
     @Inject lateinit var presenter: UserSearchPresenter
-    //@Inject lateinit var apiClient: ApiClient
     @Inject lateinit var eventBus: EventBus
     lateinit var adapter: UsersAdapter
-
-    //private val usersList = arrayListOf<User>()
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 
@@ -40,15 +37,12 @@ class UserSearchFragment : Fragment(), SearchView.OnQueryTextListener, UserSearc
         val view = inflater!!.inflate(R.layout.fragment_user_search_view, container, false)
         super.onCreateView(inflater, container, savedInstanceState)
 
-//        activity.actionBar.setDisplayHomeAsUpEnabled(true)
-
         adapter = UsersAdapter(this)
         view.users_recycler.layoutManager = LinearLayoutManager(context)
         view.users_recycler.adapter = adapter
 
 
         activity.dashboard_toolbar.title = getString(R.string.transaction_detail)
-//        eventBus.post(SetActivityTitleEvent("Select the payer"))
         eventBus.post(SetDrawerStatusEvent(false))
 
         setHasOptionsMenu(true)
@@ -61,9 +55,11 @@ class UserSearchFragment : Fragment(), SearchView.OnQueryTextListener, UserSearc
     }
 
     override fun onUserClick(user: User) {
-        eventBus.postSticky(UpdateTransactionPayerEvent(user))
-        fragmentManager.popBackStack()
+        presenter.handleUserClick(user)
+    }
 
+    override fun popBackStack(){
+        fragmentManager.popBackStack()
     }
 
     override fun onAttach(context: Context?) {
@@ -97,20 +93,11 @@ class UserSearchFragment : Fragment(), SearchView.OnQueryTextListener, UserSearc
         return false
     }
 
-
     override fun onQueryTextChange(query: String): Boolean {
         presenter.filter(query)
         return true
     }
 
-    override fun showProgress() {
-        eventBus.post(ShowProgressEvent())
-    }
-
-    override fun hideProgress() {
-        eventBus.post(HideProgressEvent())
-        eventBus.post(HideRefresherEvent())
-    }
 
 
 }

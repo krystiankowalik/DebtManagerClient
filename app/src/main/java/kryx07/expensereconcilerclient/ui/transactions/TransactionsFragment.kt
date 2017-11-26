@@ -14,7 +14,6 @@ import kotlinx.android.synthetic.main.fragment_transactions.view.*
 import kryx07.expensereconcilerclient.App
 import kryx07.expensereconcilerclient.R
 import kryx07.expensereconcilerclient.base.fragment.RefreshableFragment
-import kryx07.expensereconcilerclient.events.ReplaceFragmentEvent
 import kryx07.expensereconcilerclient.events.SetDrawerStatusEvent
 import kryx07.expensereconcilerclient.model.transactions.Transaction
 import kryx07.expensereconcilerclient.ui.transactions.detail.TransactionDetailFragment
@@ -69,17 +68,8 @@ class TransactionsFragment : RefreshableFragment(), TransactionsMvpView {
         if (actionMode != null) {
             onTransactionLongClick(position)
         } else {
-            showTransactionDetail(position)
+            presenter.handleTransactionClick(adapter.transactions[position])
         }
-    }
-
-    private fun showTransactionDetail(position: Int) {
-        showProgress()
-        val transactionDetailFragment = TransactionDetailFragment()
-        val bundle = Bundle()
-        bundle.putParcelable(getString(R.string.clicked_transaction), adapter.transactions[position])
-        transactionDetailFragment.arguments = bundle
-        eventBus.post(ReplaceFragmentEvent(transactionDetailFragment))
     }
 
     override fun onTransactionLongClick(position: Int): Boolean {

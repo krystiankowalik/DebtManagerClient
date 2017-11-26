@@ -21,6 +21,7 @@ import kryx07.expensereconcilerclient.ui.transactions.TransactionsFragment
 import kryx07.expensereconcilerclient.utils.SharedPreferencesManager
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -49,11 +50,7 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
         //to be replaced with login!!!
         sharedPreferencesManager.write(getString(R.string.my_user), "2")
 
-
-
     }
-
-
 
     override fun onDestroy() {
         eventBus.unregister(this)
@@ -128,7 +125,6 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
 
     }
 
-
     @Subscribe
     fun onShowProgress(showProgressEvent: ShowProgressEvent) {
         fragment_container.visibility = View.INVISIBLE
@@ -157,7 +153,7 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
         }
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
     fun onReplaceFragmentEvent(replaceFragmentEvent: ReplaceFragmentEvent) {
         eventBus.post(SetDrawerStatusEvent(true))
 

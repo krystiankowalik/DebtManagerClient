@@ -7,4 +7,5 @@ interface UserSearchMvpView : MvpView {
 
     fun updateData(users: List<User>)
 
+    fun popBackStack()
 }
