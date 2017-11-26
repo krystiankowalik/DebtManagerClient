@@ -1,5 +1,6 @@
 package kryx07.expensereconcilerclient.network
 
+import com.facebook.stetho.okhttp3.StethoInterceptor
 import com.google.gson.Gson
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import kryx07.expensereconcilerclient.App
@@ -36,8 +37,8 @@ class ApiClient(private val prefsManager: SharedPreferencesManager, private val 
 
         // Add interceptors to OkHttpClient
         clientBuilder.addInterceptor(loggingInterceptor)
-        // clientBuilder.addInterceptor(tokenInterceptor);
         // Set timeouts
+        clientBuilder.addNetworkInterceptor(StethoInterceptor())
         clientBuilder.connectTimeout(1, TimeUnit.MINUTES)
         clientBuilder.writeTimeout(1, TimeUnit.MINUTES)
         clientBuilder.readTimeout(1, TimeUnit.MINUTES)

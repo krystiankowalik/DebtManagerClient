@@ -76,12 +76,12 @@ class TransactionsPresenter @Inject constructor(private var apiClient: ApiClient
     }
 
     fun handleTransactionClick(transaction: Transaction) {
+        view.showProgress()
         Observable
                 .just(transaction)
                 .subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    view.showProgress()
+                    Timber.e(Thread.currentThread().name)
                     val transactionDetailFragment = TransactionDetailFragment()
                     val bundle = Bundle()
                     bundle.putParcelable(context.getString(R.string.clicked_transaction), transaction)

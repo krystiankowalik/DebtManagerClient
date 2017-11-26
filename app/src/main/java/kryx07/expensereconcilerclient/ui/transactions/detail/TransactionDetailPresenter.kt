@@ -46,6 +46,7 @@ class TransactionDetailPresenter @Inject constructor(private var apiClient: ApiC
     }
 
     private fun initTransaction(bundle: Bundle?) {
+        view.showProgress()
         if (transaction.isEmpty()) {
             val transaction = getTransactionFromBundle(bundle)
             if (transaction != null) {
@@ -55,6 +56,7 @@ class TransactionDetailPresenter @Inject constructor(private var apiClient: ApiC
             }
         }
         updateView()
+        view.hideProgress()
 
     }
 
@@ -73,6 +75,8 @@ class TransactionDetailPresenter @Inject constructor(private var apiClient: ApiC
         } else {
             updateTransaction(this.transaction)
         }
+
+
 
     }
 
