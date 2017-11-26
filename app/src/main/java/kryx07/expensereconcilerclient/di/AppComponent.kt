@@ -2,6 +2,7 @@ package kryx07.expensereconcilerclient.di
 
 
 //import kryx07.expensereconcilerclient.ui.payables.PayablesFragment
+import kryx07.expensereconcilerclient.network.ApiClient
 import kryx07.expensereconcilerclient.ui.DashboardActivity
 import kryx07.expensereconcilerclient.ui.group.GroupsFragment
 import kryx07.expensereconcilerclient.ui.transactions.TransactionSelectionAction
@@ -25,6 +26,8 @@ interface AppComponent {
     fun inject(groupsFragment: GroupsFragment)
 
     fun inject(transactionSelectionAction: TransactionSelectionAction)
+
+    fun inject(apiClient: ApiClient)
     /*void inject(LoginActivity loginActivity);
 
     void inject(DashboardActivity mainActivity);
