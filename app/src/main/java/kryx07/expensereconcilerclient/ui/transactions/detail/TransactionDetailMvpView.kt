@@ -21,6 +21,8 @@ interface TransactionDetailMvpView : MvpView {
     fun updatePayerView(payer: String)
     fun updateGroupView(group: String)
     fun updateCommonView(common: Boolean)
+    fun onDescriptionChanged(description: String)
+    fun onAmountChanged(amount: String)
 
 
 }

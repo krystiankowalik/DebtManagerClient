@@ -15,7 +15,6 @@ interface MvpView {
 
     fun hideProgress() {
         EventBus.getDefault().post(HideProgressEvent())
-        EventBus.getDefault().post(HideRefresherEvent())
     }
 
 

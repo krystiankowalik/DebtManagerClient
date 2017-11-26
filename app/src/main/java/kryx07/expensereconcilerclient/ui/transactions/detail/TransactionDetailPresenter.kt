@@ -11,19 +11,18 @@ import kryx07.expensereconcilerclient.events.UpdateTransactionGroupEvent
 import kryx07.expensereconcilerclient.events.UpdateTransactionPayerEvent
 import kryx07.expensereconcilerclient.model.transactions.Transaction
 import kryx07.expensereconcilerclient.network.ApiClient
-import kryx07.expensereconcilerclient.utils.SharedPreferencesManager
 import kryx07.expensereconcilerclient.utils.StringUtilities
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.joda.time.LocalDate
 import timber.log.Timber
+import java.math.BigDecimal
 import javax.inject.Inject
 
 
-class TransactionDetailPresenter @Inject constructor(var apiClient: ApiClient,
-                                                     var context: Context,
-                                                     val sharedPrefs: SharedPreferencesManager,
-                                                     val eventBus: EventBus
+class TransactionDetailPresenter @Inject constructor(private var apiClient: ApiClient,
+                                                     private var context: Context,
+                                                     private val eventBus: EventBus
 
 ) : BasePresenter<TransactionDetailMvpView>() {
 
@@ -115,6 +114,18 @@ class TransactionDetailPresenter @Inject constructor(var apiClient: ApiClient,
         view.updateDateView(StringUtilities.formatDate(transaction.date))
     }
 
+    fun handleDescriptionChanged(description: String) {
+        transaction.description = description
+    }
+
+    fun handleAmountChanged(amount: String) {
+        try {
+            transaction.amount = BigDecimal(amount)
+        } catch (e: NumberFormatException) {
+            transaction.amount = BigDecimal.ZERO
+        }
+    }
+
     fun toggleCommonInput() {
         transaction.common = !transaction.common
         view.updateCommonView(transaction.common)
@@ -124,6 +135,9 @@ class TransactionDetailPresenter @Inject constructor(var apiClient: ApiClient,
 
         view.updateDateView(StringUtilities.formatDate(transaction.date))
         view.updateAmountView(transaction.amount.toString())
+        if (transaction.amount == BigDecimal.ZERO) {
+            view.updateAmountView("")
+        }
         view.updateDescriptionView(transaction.description)
         view.updatePayerView(transaction.payer.username)
         view.updateGroupView(transaction.group.name)
