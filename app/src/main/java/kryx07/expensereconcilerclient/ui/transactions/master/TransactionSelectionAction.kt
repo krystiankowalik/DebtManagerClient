@@ -1,10 +1,9 @@
-package kryx07.expensereconcilerclient.ui.transactions
+package kryx07.expensereconcilerclient.ui.transactions.master
 
 import android.support.v7.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
 import kryx07.expensereconcilerclient.R
-import javax.inject.Inject
 
 class TransactionSelectionAction(private val transactionsMvpView: TransactionsMvpView) : ActionMode.Callback {
 

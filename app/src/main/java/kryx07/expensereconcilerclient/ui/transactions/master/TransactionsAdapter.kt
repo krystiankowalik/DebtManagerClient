@@ -1,4 +1,4 @@
-package kryx07.expensereconcilerclient.ui.transactions
+package kryx07.expensereconcilerclient.ui.transactions.master
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater

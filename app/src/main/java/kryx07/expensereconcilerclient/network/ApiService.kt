@@ -16,6 +16,9 @@ interface ApiService {
     @get:GET("users/")
     val allUsers: Observable<List<User>>
 
+    @GET("users/{id}")
+    fun getUserById(@Path("id") id: Int) : Observable<User>
+
     @GET("users/{id}/transactions")
     fun getUsersTransactions(@Path("id") id: Int): Observable<List<Transaction>>
 

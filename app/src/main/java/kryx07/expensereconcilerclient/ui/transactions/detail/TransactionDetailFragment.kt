@@ -2,6 +2,8 @@ package kryx07.expensereconcilerclient.ui.transactions.detail
 
 import android.content.Context
 import android.os.Bundle
+import android.support.v4.app.DialogFragment
+import android.support.v4.app.Fragment
 import android.view.*
 import butterknife.ButterKnife
 import butterknife.OnClick
@@ -10,12 +12,17 @@ import kotlinx.android.synthetic.main.fragment_transaction_detail.*
 import kotlinx.android.synthetic.main.fragment_transaction_detail.view.*
 import kryx07.expensereconcilerclient.App
 import kryx07.expensereconcilerclient.R
+import kryx07.expensereconcilerclient.events.AddFragmentEvent
 import kryx07.expensereconcilerclient.ui.group.GroupsFragment
+import kryx07.expensereconcilerclient.ui.transactions.detail.calculator.CalculatorDialogFragment
+import kryx07.expensereconcilerclient.ui.transactions.detail.date.DatePickerFragment
 import kryx07.expensereconcilerclient.ui.transactions.detail.listeners.AmountChangeListener
 import kryx07.expensereconcilerclient.ui.transactions.detail.listeners.DescriptionChangeListener
 import kryx07.expensereconcilerclient.ui.users.UserSearchFragment
 import org.greenrobot.eventbus.EventBus
+import timber.log.Timber
 import javax.inject.Inject
+
 
 class TransactionDetailFragment : android.support.v4.app.Fragment(), TransactionDetailMvpView {
 
@@ -63,7 +70,6 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
     }
 
 
-
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_transaction_detail, menu)
         menu.findItem(R.id.menu_save).setOnMenuItemClickListener({
@@ -93,6 +99,28 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
         datePickerFragment.show(fragmentManager, null)
     }
 
+    @OnClick(R.id.amount_input)
+    fun onAmountClick() {
+        //showProgress()
+//        val calculatorDialogFragment = CalculatorDialogFragment()
+        val calculatorDialogFragment: DialogFragment = CalculatorDialogFragment()
+        Timber.e(view!!.toString())
+        val text = view?.amount_input?.text
+        if (text != null && !text.isBlank()) {
+            calculatorDialogFragment.passStringInBundle(
+                    getString(R.string.amount_from_detail_transaction_screen), text.toString())
+        }
+        calculatorDialogFragment.show(fragmentManager, null)
+    }
+
+    @OnClick(R.id.description_input)
+    fun onDescClick() {
+        //showProgress()
+//        val calculatorDialogFragment = CalculatorDialogFragment()
+//        CalculatorDialogFragment().show(fragmentManager, null)
+//        showFragment(CalculatorDialogFragment())
+    }
+
     @OnClick(R.id.payer_input)
     fun onPayerClick() {
         showProgress()
@@ -102,9 +130,10 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
     @OnClick(R.id.group_input)
     fun onGroupClick() {
         showProgress()
-        val bundle = Bundle()
-        bundle.putString(getString(R.string.fragment_action), getString(R.string.update_group_from_detail_view))
-        showFragment(GroupsFragment(), bundle)
+        /*val bundle = Bundle()
+        bundle.putString(getString(R.string.fragment_action), getString(R.string.update_group_from_detail_view))*/
+        showFragment(GroupsFragment().passStringInBundle(
+                getString(R.string.fragment_action), getString(R.string.update_group_from_detail_view)))
     }
 
     @OnClick(R.id.common_input)
@@ -120,6 +149,13 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
     override fun updatePayerView(payer: String) = payer_input.setText(payer)
     override fun updateGroupView(group: String) = group_input.setText(group)
     override fun updateCommonView(common: Boolean) = common_input.setChecked(common)
+
+    fun Fragment.passStringInBundle(key: String, value: String): Fragment {
+        val bundle = Bundle()
+        bundle.putString(key, value)
+        this@passStringInBundle.arguments = bundle
+        return this
+    }
 }
 
 

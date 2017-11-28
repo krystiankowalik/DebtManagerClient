@@ -1,7 +1,9 @@
-package kryx07.expensereconcilerclient.ui.transactions
+package kryx07.expensereconcilerclient.ui.transactions.master
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Parcelable
+import android.support.v4.app.Fragment
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -15,7 +17,6 @@ import kryx07.expensereconcilerclient.ui.transactions.detail.TransactionDetailFr
 import kryx07.expensereconcilerclient.utils.SharedPreferencesManager
 import org.greenrobot.eventbus.EventBus
 import timber.log.Timber
-import java.util.*
 import javax.inject.Inject
 
 class TransactionsPresenter @Inject constructor(private var apiClient: ApiClient,
@@ -81,12 +82,17 @@ class TransactionsPresenter @Inject constructor(private var apiClient: ApiClient
                 .just(transaction)
                 .subscribeOn(Schedulers.computation())
                 .subscribe({
-                    Timber.e(Thread.currentThread().name)
-                    val transactionDetailFragment = TransactionDetailFragment()
-                    val bundle = Bundle()
-                    bundle.putParcelable(context.getString(R.string.clicked_transaction), transaction)
-                    transactionDetailFragment.arguments = bundle
-                    eventBus.post(ReplaceFragmentEvent(transactionDetailFragment))
+                    eventBus.post(ReplaceFragmentEvent(TransactionDetailFragment()
+                            .passParcelableInBundle(
+                                    context.getString(R.string.clicked_transaction), transaction)
+                    ))
                 })
+    }
+
+    private fun Fragment.passParcelableInBundle(key: String, value: Parcelable): Fragment {
+        val bundle = Bundle()
+        bundle.putParcelable(key, value)
+        this@passParcelableInBundle.arguments = bundle
+        return this
     }
 }

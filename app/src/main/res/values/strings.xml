@@ -39,5 +39,7 @@
     <string name="delete">Delete</string>
     <string name="transaction_selected">transaction selected</string>
     <string name="transactions_selected">transactions selected</string>
+    <string name="calculator_fragment_title">Enter amount</string>
+    <string name="amount_from_detail_transaction_screen">amount_from_detail_transaction_screen</string>
 
 </resources>

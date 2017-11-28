@@ -9,7 +9,6 @@ import android.support.v4.app.FragmentTransaction
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
-import android.view.ContextMenu
 import android.view.View
 import butterknife.ButterKnife
 import kotlinx.android.synthetic.main.activity_dashboard.*
@@ -17,7 +16,7 @@ import kryx07.expensereconcilerclient.App
 import kryx07.expensereconcilerclient.R
 import kryx07.expensereconcilerclient.events.*
 import kryx07.expensereconcilerclient.ui.group.GroupsFragment
-import kryx07.expensereconcilerclient.ui.transactions.TransactionsFragment
+import kryx07.expensereconcilerclient.ui.transactions.master.TransactionsFragment
 import kryx07.expensereconcilerclient.utils.SharedPreferencesManager
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -130,6 +129,8 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
         fragment_container.visibility = View.INVISIBLE
         dashboard_progress.visibility = View.VISIBLE
     }
+
+
 
     @Subscribe
     fun onHideProgress(hideProgressEvent: HideProgressEvent) {

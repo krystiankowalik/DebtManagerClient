@@ -1,4 +1,4 @@
-package kryx07.expensereconcilerclient.ui.transactions.detail
+package kryx07.expensereconcilerclient.ui.transactions.detail.date
 
 import android.app.DatePickerDialog
 import android.app.Dialog

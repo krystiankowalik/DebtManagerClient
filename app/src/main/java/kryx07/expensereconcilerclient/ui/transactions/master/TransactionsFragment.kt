@@ -1,7 +1,8 @@
-package kryx07.expensereconcilerclient.ui.transactions
+package kryx07.expensereconcilerclient.ui.transactions.master
 
 import android.os.Bundle
 import android.support.design.widget.Snackbar
+import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
@@ -136,4 +137,6 @@ class TransactionsFragment : RefreshableFragment(), TransactionsMvpView {
         Timber.e(context.getString(int))
         Snackbar.make(view!!, context.getString(int), Snackbar.LENGTH_LONG).show()
     }
+
+
 }

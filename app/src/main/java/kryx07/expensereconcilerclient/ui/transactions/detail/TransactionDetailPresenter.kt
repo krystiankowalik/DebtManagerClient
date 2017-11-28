@@ -7,11 +7,14 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kryx07.expensereconcilerclient.R
 import kryx07.expensereconcilerclient.base.presenter.BasePresenter
+import kryx07.expensereconcilerclient.events.UpdateTransactionAmountEvent
 import kryx07.expensereconcilerclient.events.UpdateTransactionDateEvent
 import kryx07.expensereconcilerclient.events.UpdateTransactionGroupEvent
 import kryx07.expensereconcilerclient.events.UpdateTransactionPayerEvent
 import kryx07.expensereconcilerclient.model.transactions.Transaction
+import kryx07.expensereconcilerclient.model.users.User
 import kryx07.expensereconcilerclient.network.ApiClient
+import kryx07.expensereconcilerclient.utils.SharedPreferencesManager
 import kryx07.expensereconcilerclient.utils.StringUtilities
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -24,7 +27,8 @@ import javax.inject.Inject
 
 class TransactionDetailPresenter @Inject constructor(private var apiClient: ApiClient,
                                                      private var context: Context,
-                                                     private val eventBus: EventBus
+                                                     private val eventBus: EventBus,
+                                                     private val sharedPreferencesManager: SharedPreferencesManager
 
 ) : BasePresenter<TransactionDetailMvpView>() {
 
@@ -53,11 +57,23 @@ class TransactionDetailPresenter @Inject constructor(private var apiClient: ApiC
                 this.transaction = transaction
             } else {
                 this.transaction.date = LocalDate.now()
+                this.transaction.common=true
+                setMyUserAsPayerDefault(sharedPreferencesManager.read(context.getString(R.string.my_user)).toInt())
             }
         }
         updateView()
         view.hideProgress()
 
+    }
+
+    private fun setMyUserAsPayerDefault(id: Int) {
+        apiClient.service.getUserById(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ u ->
+                    this.transaction.payer = u
+                    updateView()
+                })
     }
 
     private fun getTransactionFromBundle(bundle: Bundle?): Transaction? =
@@ -75,7 +91,6 @@ class TransactionDetailPresenter @Inject constructor(private var apiClient: ApiC
         } else {
             updateTransaction(this.transaction)
         }
-
 
 
     }
@@ -118,6 +133,12 @@ class TransactionDetailPresenter @Inject constructor(private var apiClient: ApiC
     fun onDateUpdateEvent(updateTransactionDateEvent: UpdateTransactionDateEvent) {
         transaction.date = updateTransactionDateEvent.date
         view.updateDateView(StringUtilities.formatDate(transaction.date))
+    }
+
+    @Subscribe
+    fun onAmountUpdateEvent(updateTransactionAmountEvent: UpdateTransactionAmountEvent) {
+        transaction.amount = BigDecimal(updateTransactionAmountEvent.amount)
+        view.updateAmountView(transaction.amount.toString())
     }
 
     fun handleDescriptionChanged(description: String) {

@@ -11,6 +11,17 @@
 
         <item name="windowActionModeOverlay">true</item>
         <item name="android:actionModeBackground">@color/light_blue</item>
+
+
     </style>
+
+
+    <style name="calc_action">
+        <item name="android:background">#f7f8fa</item>
+    </style>
+    <style name="calc_number">
+        <item name="android:background">#fafbfd</item>
+    </style>
+
 
 </resources>

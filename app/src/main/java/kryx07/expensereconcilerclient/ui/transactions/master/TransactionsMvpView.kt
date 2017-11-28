@@ -1,4 +1,4 @@
-package kryx07.expensereconcilerclient.ui.transactions
+package kryx07.expensereconcilerclient.ui.transactions.master
 
 import android.support.v4.app.Fragment
 import kryx07.expensereconcilerclient.base.fragment.MvpView
