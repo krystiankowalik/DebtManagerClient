@@ -8,24 +8,28 @@ import android.view.ViewGroup
 import android.widget.TextView
 import kotlinx.android.synthetic.main.fragment_transaction_amount_calculator.*
 import kotlinx.android.synthetic.main.fragment_transaction_amount_calculator.view.*
+import kryx07.expensereconcilerclient.App
 import kryx07.expensereconcilerclient.R
-import kryx07.expensereconcilerclient.events.UpdateTransactionAmountEvent
-import net.sourceforge.jeval.Evaluator
-import org.greenrobot.eventbus.EventBus
+import javax.inject.Inject
 
 
-class CalculatorDialogFragment : BottomSheetDialogFragment() {
+class CalculatorDialogFragment() : BottomSheetDialogFragment(), CalculatorDialogMvpView {
+
+    @Inject lateinit var presenter: CalculatorDialogPresenter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_transaction_amount_calculator, container, false)
+        App.appComponent.inject(this)
 
         return view
 
-        //return super.onCreateView(inflater, container, savedInstanceState)
     }
+
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        presenter.attachView(this)
 
         setRegularButtonsListeners(view as ViewGroup)
 
@@ -34,7 +38,13 @@ class CalculatorDialogFragment : BottomSheetDialogFragment() {
         view.button_equals.setOnClickListener({ handleEqualsClick() })
         view.button_empty_equals.setOnClickListener({ handleEqualsClick() })
 
-        getAmountFromBundle(view)
+        presenter.handleReceivedBundle(arguments)
+        //getAmountFromBundle(view)
+    }
+
+    override fun onDestroyView() {
+        presenter.detach()
+        super.onDestroyView()
     }
 
     private fun getAmountFromBundle(view: View) {
@@ -84,13 +94,11 @@ class CalculatorDialogFragment : BottomSheetDialogFragment() {
     }
 
     private fun handleEqualsClick() {
-
-        val stringFromView = view?.calculator_screen?.text.toString()
-        val evaluator = Evaluator()
-        val evaluatedString = evaluator.evaluate(stringFromView)
-        view?.calculator_screen?.text = evaluatedString
-        EventBus.getDefault().postSticky(UpdateTransactionAmountEvent(evaluatedString))
+        val stringFromView: String? = view?.calculator_screen?.text.toString()
+        presenter.onEqualsClick(stringFromView)
     }
 
-
+    override fun showResult(string: String) {
+        view?.calculator_screen?.text = string
+    }
 }

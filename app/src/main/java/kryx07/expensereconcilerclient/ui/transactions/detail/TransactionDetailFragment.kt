@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
 import android.view.*
+import android.view.inputmethod.InputMethodManager
 import butterknife.ButterKnife
 import butterknife.OnClick
 import kotlinx.android.synthetic.main.activity_dashboard.*
@@ -12,11 +13,9 @@ import kotlinx.android.synthetic.main.fragment_transaction_detail.*
 import kotlinx.android.synthetic.main.fragment_transaction_detail.view.*
 import kryx07.expensereconcilerclient.App
 import kryx07.expensereconcilerclient.R
-import kryx07.expensereconcilerclient.events.AddFragmentEvent
 import kryx07.expensereconcilerclient.ui.group.GroupsFragment
 import kryx07.expensereconcilerclient.ui.transactions.detail.calculator.CalculatorDialogFragment
 import kryx07.expensereconcilerclient.ui.transactions.detail.date.DatePickerFragment
-import kryx07.expensereconcilerclient.ui.transactions.detail.listeners.AmountChangeListener
 import kryx07.expensereconcilerclient.ui.transactions.detail.listeners.DescriptionChangeListener
 import kryx07.expensereconcilerclient.ui.users.UserSearchFragment
 import org.greenrobot.eventbus.EventBus
@@ -57,7 +56,6 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
     }
 
     private fun addChangeListeners(view: View) {
-        view.amount_input.addTextChangedListener(AmountChangeListener(this))
         view.description_input.addTextChangedListener(DescriptionChangeListener(this))
     }
 
@@ -97,6 +95,7 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
     private fun pickDate() {
         datePickerFragment.initialDate = presenter.getInitialTransactionDate()
         datePickerFragment.show(fragmentManager, null)
+        hideSoftInput()
     }
 
     @OnClick(R.id.amount_input)
@@ -110,20 +109,18 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
             calculatorDialogFragment.passStringInBundle(
                     getString(R.string.amount_from_detail_transaction_screen), text.toString())
         }
+        hideSoftInput()
         calculatorDialogFragment.show(fragmentManager, null)
     }
 
     @OnClick(R.id.description_input)
     fun onDescClick() {
-        //showProgress()
-//        val calculatorDialogFragment = CalculatorDialogFragment()
-//        CalculatorDialogFragment().show(fragmentManager, null)
-//        showFragment(CalculatorDialogFragment())
     }
 
     @OnClick(R.id.payer_input)
     fun onPayerClick() {
         showProgress()
+        hideSoftInput()
         showFragment(UserSearchFragment())
     }
 
@@ -132,6 +129,7 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
         showProgress()
         /*val bundle = Bundle()
         bundle.putString(getString(R.string.fragment_action), getString(R.string.update_group_from_detail_view))*/
+        hideSoftInput()
         showFragment(GroupsFragment().passStringInBundle(
                 getString(R.string.fragment_action), getString(R.string.update_group_from_detail_view)))
     }
@@ -150,12 +148,23 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
     override fun updateGroupView(group: String) = group_input.setText(group)
     override fun updateCommonView(common: Boolean) = common_input.setChecked(common)
 
-    fun Fragment.passStringInBundle(key: String, value: String): Fragment {
+    private fun Fragment.passStringInBundle(key: String, value: String): Fragment {
         val bundle = Bundle()
         bundle.putString(key, value)
         this@passStringInBundle.arguments = bundle
         return this
     }
+
+     override fun hideSoftInput(){
+        val view = this.activity.currentFocus
+        if (view != null) {
+            val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
+        }
+    }
+
+
+
 }
 
 

@@ -8,6 +8,7 @@ import kryx07.expensereconcilerclient.ui.group.GroupsFragment
 import kryx07.expensereconcilerclient.ui.transactions.master.TransactionSelectionAction
 import kryx07.expensereconcilerclient.ui.transactions.master.TransactionsFragment
 import kryx07.expensereconcilerclient.ui.transactions.detail.TransactionDetailFragment
+import kryx07.expensereconcilerclient.ui.transactions.detail.calculator.CalculatorDialogFragment
 import kryx07.expensereconcilerclient.ui.users.UserSearchFragment
 import javax.inject.Singleton
 
@@ -28,6 +29,8 @@ interface AppComponent {
     fun inject(transactionSelectionAction: TransactionSelectionAction)
 
     fun inject(apiClient: ApiClient)
+
+    fun inject(calculatorDialogFragment: CalculatorDialogFragment)
     /*void inject(LoginActivity loginActivity);
 
     void inject(DashboardActivity mainActivity);

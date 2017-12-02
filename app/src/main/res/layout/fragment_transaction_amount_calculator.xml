@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:layout_alignParentBottom="true"
 android:stretchColumns="*"
+
     >
 
     <TextView
@@ -22,7 +23,7 @@ android:stretchColumns="*"
         android:textSize="48sp" />
 
 
-    <TableRow>
+    <TableRow style="@style/calc_button_rows">
 
         <Button
             android:id="@+id/button_clear"
@@ -31,13 +32,7 @@ android:stretchColumns="*"
             android:layout_height="wrap_content"
             android:text="C"
             android:textColor="@color/orange" />
-        <Button
-            android:id="@+id/button_multiply"
-            style="@style/calc_action"
-            android:layout_width="wrap_content"
-            android:tag="*"
-            android:layout_height="wrap_content"
-            android:text="x" />
+
 
         <Button
             android:id="@+id/button_divide"
@@ -47,6 +42,13 @@ android:stretchColumns="*"
             android:layout_height="wrap_content"
             android:text="/" />
 
+        <Button
+            android:id="@+id/button_multiply"
+            style="@style/calc_action"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tag="*"
+            android:text="x" />
 
 
         <Button
@@ -58,7 +60,7 @@ android:stretchColumns="*"
             android:textColor="@color/orange" />
     </TableRow>
 
-    <TableRow>
+    <TableRow style="@style/calc_button_rows">
 
         <Button
             android:id="@+id/button_7"
@@ -83,18 +85,19 @@ android:stretchColumns="*"
             android:tag="9"
             android:layout_height="wrap_content"
             android:text="9" />
-
-
         <Button
-            android:id="@+id/button_plus"
-            android:tag="+"
+            android:id="@+id/button_minus"
             style="@style/calc_action"
+            android:tag="-"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="+" />
+            android:text="-" />
+
+
     </TableRow>
 
-    <TableRow>
+       <TableRow style="@style/calc_button_rows">
+
 
         <Button
             android:id="@+id/button_4"
@@ -120,16 +123,16 @@ android:stretchColumns="*"
             android:layout_height="wrap_content"
             android:text="6" />
         <Button
-            android:id="@+id/button_minus"
+            android:id="@+id/button_plus"
+            android:tag="+"
             style="@style/calc_action"
-            android:tag="-"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="-" />
+            android:text="+" />
 
     </TableRow>
 
-    <TableRow>
+    <TableRow style="@style/calc_button_rows">
 
         <Button
             android:id="@+id/button_1"
@@ -166,7 +169,7 @@ android:stretchColumns="*"
 
     </TableRow>
 
-    <TableRow>
+    <TableRow style="@style/calc_button_rows">
 
         <Button
             android:id="@+id/button_nothing"

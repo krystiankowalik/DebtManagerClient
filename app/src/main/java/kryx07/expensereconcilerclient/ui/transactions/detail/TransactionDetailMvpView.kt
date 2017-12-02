@@ -25,5 +25,5 @@ interface TransactionDetailMvpView : MvpView {
     fun onDescriptionChanged(description: String)
     fun onAmountChanged(amount: String)
 
-
+    fun hideSoftInput()
 }

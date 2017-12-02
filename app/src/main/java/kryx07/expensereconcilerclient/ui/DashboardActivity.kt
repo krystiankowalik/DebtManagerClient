@@ -185,7 +185,6 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
             } else {
 
             }
-            Timber.e(removeFragmentEvent.toString())
 
         }
 

@@ -7,6 +7,7 @@ import io.objectbox.BoxStore
 import kryx07.expensereconcilerclient.model.users.MyObjectBox
 import kryx07.expensereconcilerclient.network.ApiClient
 import kryx07.expensereconcilerclient.utils.SharedPreferencesManager
+import net.sourceforge.jeval.Evaluator
 import org.greenrobot.eventbus.EventBus
 import org.joda.time.LocalDate
 import javax.inject.Singleton
@@ -51,6 +52,10 @@ class AppModule(private val context: Context) {
                 })
                 .create()
     }
+
+    @Provides
+    @Singleton
+    fun providesJEvalEvaluator() = Evaluator()
 
 
 }

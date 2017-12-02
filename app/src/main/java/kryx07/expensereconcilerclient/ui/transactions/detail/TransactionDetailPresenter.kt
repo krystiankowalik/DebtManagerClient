@@ -92,6 +92,8 @@ class TransactionDetailPresenter @Inject constructor(private var apiClient: ApiC
             updateTransaction(this.transaction)
         }
 
+        view.hideSoftInput()
+
 
     }
 
