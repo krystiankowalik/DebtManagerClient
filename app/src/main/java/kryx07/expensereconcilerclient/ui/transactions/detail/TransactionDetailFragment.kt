@@ -13,6 +13,7 @@ import kotlinx.android.synthetic.main.fragment_transaction_detail.*
 import kotlinx.android.synthetic.main.fragment_transaction_detail.view.*
 import kryx07.expensereconcilerclient.App
 import kryx07.expensereconcilerclient.R
+import kryx07.expensereconcilerclient.base.fragment.SnackableFragment
 import kryx07.expensereconcilerclient.ui.group.GroupsFragment
 import kryx07.expensereconcilerclient.ui.transactions.detail.calculator.CalculatorDialogFragment
 import kryx07.expensereconcilerclient.ui.transactions.detail.date.DatePickerFragment
@@ -23,10 +24,12 @@ import timber.log.Timber
 import javax.inject.Inject
 
 
-class TransactionDetailFragment : android.support.v4.app.Fragment(), TransactionDetailMvpView {
+class TransactionDetailFragment : SnackableFragment(), TransactionDetailMvpView {
 
-    @Inject lateinit var presenter: TransactionDetailPresenter
-    @Inject lateinit var eventBus: EventBus
+    @Inject
+    lateinit var presenter: TransactionDetailPresenter
+    @Inject
+    lateinit var eventBus: EventBus
 
     private val datePickerFragment = DatePickerFragment()
 
@@ -41,14 +44,14 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
         super.onDetach()
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
         val view = inflater!!.inflate(R.layout.fragment_transaction_detail, container, false)
         ButterKnife.bind(this, view)
 
         setHasOptionsMenu(true)
 
-        activity.dashboard_toolbar.title = getString(R.string.transaction_detail)
+        activity!!.dashboard_toolbar.title = getString(R.string.transaction_detail)
 
         addChangeListeners(view)
 
@@ -138,7 +141,7 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
     fun onCheckBoxClick() = presenter.toggleCommonInput()
 
     override fun popBackStack() {
-        fragmentManager.popBackStack()
+        fragmentManager?.popBackStack()
     }
 
     override fun updateDateView(date: String) = date_input.setText(date)
@@ -155,14 +158,13 @@ class TransactionDetailFragment : android.support.v4.app.Fragment(), Transaction
         return this
     }
 
-     override fun hideSoftInput(){
-        val view = this.activity.currentFocus
+    override fun hideSoftInput() {
+        val view = this.activity?.currentFocus
         if (view != null) {
-            val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
-
 
 
 }

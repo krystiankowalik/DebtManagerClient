@@ -86,8 +86,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/description_text"
-                android:padding="@dimen/margin_item_adapter"
-                android:text="Coca cola light"
+                android:text=""
                 android:textStyle="italic" />
 
 

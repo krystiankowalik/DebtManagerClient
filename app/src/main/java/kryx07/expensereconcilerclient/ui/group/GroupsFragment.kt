@@ -11,23 +11,27 @@ import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.fragment_groups.view.*
 import kryx07.expensereconcilerclient.App
 import kryx07.expensereconcilerclient.R
+import kryx07.expensereconcilerclient.base.fragment.SnackableFragment
 import kryx07.expensereconcilerclient.events.*
 import kryx07.expensereconcilerclient.model.users.Group
 import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 
-class GroupsFragment @Inject constructor() : Fragment(), GroupsMvpView, GroupsAdapter.OnGroupClickListener {
+class GroupsFragment @Inject constructor() : SnackableFragment(), GroupsMvpView, GroupsAdapter.OnGroupClickListener {
 
-    @Inject lateinit var presenter: GroupsPresenter
+    @Inject
+    lateinit var presenter: GroupsPresenter
     private lateinit var adapter: GroupsAdapter
-    @Inject lateinit var eventBus: EventBus
+    @Inject
+    lateinit var eventBus: EventBus
 
     /*  @Inject lateinit var apiClient: ApiClient
       @Inject lateinit var sharedPrefs: SharedPreferencesManager*/
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
-        val view = inflater!!.inflate(R.layout.fragment_groups, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+
+        val view = inflater.inflate(R.layout.fragment_groups, container, false)
         App.appComponent.inject(this)
         ButterKnife.bind(this, view)
 
@@ -36,7 +40,7 @@ class GroupsFragment @Inject constructor() : Fragment(), GroupsMvpView, GroupsAd
         view.groups_recycler.adapter = adapter
         presenter.attachView(this)
 
-        activity.dashboard_toolbar.title = getString(R.string.my_groups)
+        activity!!.dashboard_toolbar.title = getString(R.string.my_groups)
         eventBus.post(SetDrawerStatusEvent(false))
 
         return view
@@ -44,9 +48,10 @@ class GroupsFragment @Inject constructor() : Fragment(), GroupsMvpView, GroupsAd
     }
 
     override fun onGroupClick(group: Group) {
-        if (arguments.get(getString(R.string.fragment_action))==getString(R.string.update_group_from_detail_view)) {
+
+        if (arguments!!.get(getString(R.string.fragment_action)) == getString(R.string.update_group_from_detail_view)) {
             eventBus.postSticky(UpdateTransactionGroupEvent(group))
-            fragmentManager.popBackStack()
+            fragmentManager!!.popBackStack()
         }
     }
 

@@ -17,14 +17,14 @@ class UsersAdapter(private val onUserClickListener: OnUserClickListener) : Recyc
         fun onUserClick(user:User)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): UsersHolder {
-        return UsersAdapter.UsersHolder(LayoutInflater.from(parent?.context).inflate(R.layout.item_user, parent, false),onUserClickListener)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UsersHolder {
+        return UsersAdapter.UsersHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_user, parent, false),onUserClickListener)
     }
 
     override fun getItemCount(): Int = users.size()
 
-    override fun onBindViewHolder(holder: UsersHolder?, position: Int) {
-        holder?.setupItem(users[position])
+    override fun onBindViewHolder(holder: UsersHolder, position: Int) {
+        holder.setupItem(users[position])
     }
 
     class UsersHolder(itemView: View, private val listener: OnUserClickListener) : RecyclerView.ViewHolder(itemView) {

@@ -12,11 +12,11 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import timber.log.Timber
 
-abstract class RefreshableFragment() : Fragment() {
+abstract class RefreshableFragment() : SnackableFragment() {
 
     lateinit var swipeRefresher: SwipeRefreshLayout
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         EventBus.getDefault().register(this)
         setupSwipeRefresher(container as SwipeRefreshLayout)
         return super.onCreateView(inflater, container, savedInstanceState)

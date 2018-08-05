@@ -1,5 +1,7 @@
 package kryx07.expensereconcilerclient.ui
 
+import android.content.res.AssetManager
+import android.content.res.Resources
 import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.NavigationView
@@ -22,13 +24,20 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import timber.log.Timber
+import javax.annotation.Resource
 import javax.inject.Inject
+import android.R.raw
+import java.io.BufferedReader
+import java.io.InputStreamReader
+
 
 class DashboardActivity @Inject constructor() : AppCompatActivity() {
 
-    @Inject lateinit var sharedPreferencesManager: SharedPreferencesManager
+    @Inject
+    lateinit var sharedPreferencesManager: SharedPreferencesManager
     //    @Inject lateinit var boxStore: BoxStore
-    @Inject lateinit var eventBus: EventBus
+    @Inject
+    lateinit var eventBus: EventBus
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,11 +52,23 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
         setupNavigationDrawer()
 
         if (savedInstanceState == null) {
-                 showFragment(TransactionsFragment())
+            //showFragment(TransactionsFragment())
         }
 
         //to be replaced with login!!!
         sharedPreferencesManager.write(getString(R.string.my_user), "2")
+
+        readConfig()
+    }
+
+    private fun readConfig() {
+//        val raw = assets.open("raw/keycloak.json")
+//        baseContext.resources.getIdentifier("keycloack.json", "raw", applicationContext.packageName)
+//        val reader = BufferedReader(InputStreamReader(raw, "UTF8"))
+        val inputStream = resources.openRawResource(R.raw.keycloak)
+        val bufferedReader = BufferedReader(InputStreamReader(inputStream, "UTF8"))
+//        Timber.e(reader.lineSequence().toList().toString())
+        Timber.e(bufferedReader.readText())
 
     }
 
@@ -131,7 +152,6 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
     }
 
 
-
     @Subscribe
     fun onHideProgress(hideProgressEvent: HideProgressEvent) {
         fragment_container.visibility = View.VISIBLE
@@ -193,8 +213,6 @@ class DashboardActivity @Inject constructor() : AppCompatActivity() {
             Timber.e("I get that:" + setActivityTitleEvent.title)
             supportActionBar?.title = setActivityTitleEvent.title
         }
-
-
 
 
     }

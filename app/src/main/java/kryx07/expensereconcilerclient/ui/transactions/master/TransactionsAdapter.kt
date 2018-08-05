@@ -7,19 +7,19 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.item_card_transactions_adapter.view.*
 import kryx07.expensereconcilerclient.R
 import kryx07.expensereconcilerclient.base.adapter.SelectableAdapter
-import kryx07.expensereconcilerclient.model.transactions.Transaction
+import kryx07.expensereconcilerclient.model.transaction.Transaction
 import kryx07.expensereconcilerclient.utils.StringUtilities
 
 class TransactionsAdapter(private val transactionsView: TransactionsMvpView) : SelectableAdapter<TransactionsAdapter.TransactionsHolder>() /*RecyclerView.Adapter<TransactionsAdapter.TransactionsHolder>()*/ {
 
     var transactions = (mutableListOf<Transaction>())
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): TransactionsHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionsHolder {
         return TransactionsHolder(LayoutInflater.from(parent?.context).inflate(R.layout.item_card_transactions_adapter, parent, false), transactionsView)
     }
 
 
-    override fun onBindViewHolder(holder: TransactionsHolder?, position: Int) {
+    override fun onBindViewHolder(holder: TransactionsHolder, position: Int) {
         holder?.setupTransaction(transactions[position], position)
         if (isSelected(position)) {
             holder?.itemView?.transaction_item_background?.visibility = View.VISIBLE
@@ -60,12 +60,12 @@ class TransactionsAdapter(private val transactionsView: TransactionsMvpView) : S
             itemView.isLongClickable = true
             itemView.setOnLongClickListener { transactionsView.onTransactionLongClick(position) }
 
-            itemView.material_initials_text.text = transaction.payer.username.toUpperCase().substring(0, 2)
+//            itemView.material_initials_text.text = transaction.payer.username.toUpperCase().substring(0, 2)
 //            itemView.material_initials_text.text = position.toString()
             itemView.date_text.text = transaction.date.toString()
             itemView.description_text.text = transaction.description
-            itemView.amount.text = StringUtilities.formatCurrency(transaction.amount, itemView.context.getString(R.string.currency))
-            itemView.group_text.text = transaction.group.name
+            itemView.amount.text = transaction.money.amount.toString()
+//            itemView.group_text.text = transaction.group.name
 
         }
 

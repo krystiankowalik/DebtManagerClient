@@ -3,12 +3,16 @@ package kryx07.expensereconcilerclient.di
 
 //import kryx07.expensereconcilerclient.ui.payables.PayablesFragment
 import kryx07.expensereconcilerclient.network.ApiClient
+import kryx07.expensereconcilerclient.network.BaseApiClient
+import kryx07.expensereconcilerclient.network.TransactionApiClient
 import kryx07.expensereconcilerclient.ui.DashboardActivity
+import kryx07.expensereconcilerclient.ui.LoginActivity
 import kryx07.expensereconcilerclient.ui.group.GroupsFragment
 import kryx07.expensereconcilerclient.ui.transactions.master.TransactionSelectionAction
 import kryx07.expensereconcilerclient.ui.transactions.master.TransactionsFragment
 import kryx07.expensereconcilerclient.ui.transactions.detail.TransactionDetailFragment
 import kryx07.expensereconcilerclient.ui.transactions.detail.calculator.CalculatorDialogFragment
+import kryx07.expensereconcilerclient.ui.transactions.master.NewTransactionsFragment
 import kryx07.expensereconcilerclient.ui.users.UserSearchFragment
 import javax.inject.Singleton
 
@@ -30,7 +34,13 @@ interface AppComponent {
 
     fun inject(apiClient: ApiClient)
 
+    fun inject(loginActivity: LoginActivity)
+
+//    fun inject(baseApiClient: BaseApiClient)
+
     fun inject(calculatorDialogFragment: CalculatorDialogFragment)
+    fun inject(transactionApiClient: TransactionApiClient)
+    fun inject(newTransactionsFragment: NewTransactionsFragment)
     /*void inject(LoginActivity loginActivity);
 
     void inject(DashboardActivity mainActivity);

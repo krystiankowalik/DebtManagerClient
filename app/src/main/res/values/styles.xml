@@ -19,6 +19,7 @@
     <style name="calc_action">
         <item name="android:background">#f7f8fa</item>
     </style>
+
     <style name="calc_number">
         <item name="android:background">#fafbfd</item>
     </style>
@@ -27,6 +28,10 @@
         <!--<item name="android:minHeight">60dp</item>
         <item name="android:layout_height">60dp</item>-->
     </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 
 </resources>

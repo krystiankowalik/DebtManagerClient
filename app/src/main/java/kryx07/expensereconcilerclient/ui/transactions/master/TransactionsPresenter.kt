@@ -11,15 +11,15 @@ import io.reactivex.schedulers.Schedulers
 import kryx07.expensereconcilerclient.R
 import kryx07.expensereconcilerclient.base.presenter.BasePresenter
 import kryx07.expensereconcilerclient.events.ReplaceFragmentEvent
-import kryx07.expensereconcilerclient.model.transactions.Transaction
-import kryx07.expensereconcilerclient.network.ApiClient
+import kryx07.expensereconcilerclient.model.transaction.Transaction
+import kryx07.expensereconcilerclient.network.TransactionApiClient
 import kryx07.expensereconcilerclient.ui.transactions.detail.TransactionDetailFragment
 import kryx07.expensereconcilerclient.utils.SharedPreferencesManager
 import org.greenrobot.eventbus.EventBus
 import timber.log.Timber
 import javax.inject.Inject
 
-class TransactionsPresenter @Inject constructor(private var apiClient: ApiClient,
+class TransactionsPresenter @Inject constructor(private var apiClient: TransactionApiClient,
                                                 private var context: Context,
                                                 private val sharedPrefs: SharedPreferencesManager,
                                                 private val eventBus: EventBus
@@ -34,18 +34,16 @@ class TransactionsPresenter @Inject constructor(private var apiClient: ApiClient
     fun requestTransactions() {
         view.showProgress()
 
-        Timber.d(sharedPrefs.read(context.getString(R.string.my_user)))
-
         val transactionSubscription = apiClient.service
-                .getUsersTransactions(sharedPrefs.read(context.getString(R.string.my_user)).toInt())
+                .getUsersTransactions()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ transactions ->
-                    updateData(transactions)
+                    view.updateData(transactions)
                 }, { error ->
                     handleFailedApiRequest(error)
                     view.hideProgress()
-                    Timber.e(error.message)
+                    Timber.e(error.stackTrace.joinToString(", "))
                 }, {
                     view.hideProgress()
                 }
@@ -58,10 +56,6 @@ class TransactionsPresenter @Inject constructor(private var apiClient: ApiClient
         view.hideProgress()
         Timber.e(error.message)
         view.showSnackAndLog(R.string.fetching_error)
-    }
-
-    private fun updateData(transactions: List<Transaction>) {
-        view.updateData(transactions)
     }
 
     fun removeTransactions(transactions: List<Transaction>) {

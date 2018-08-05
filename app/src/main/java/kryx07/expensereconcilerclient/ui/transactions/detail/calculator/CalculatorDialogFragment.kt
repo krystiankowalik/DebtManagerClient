@@ -14,6 +14,21 @@ import javax.inject.Inject
 
 
 class CalculatorDialogFragment() : BottomSheetDialogFragment(), CalculatorDialogMvpView {
+    override fun showSnack(text: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun showSnack(text: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun showSnackAndLog(text: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun showSnackAndLog(text: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
     @Inject lateinit var presenter: CalculatorDialogPresenter
 
@@ -26,7 +41,7 @@ class CalculatorDialogFragment() : BottomSheetDialogFragment(), CalculatorDialog
     }
 
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         presenter.attachView(this)
@@ -50,7 +65,7 @@ class CalculatorDialogFragment() : BottomSheetDialogFragment(), CalculatorDialog
     private fun getAmountFromBundle(view: View) {
         if (arguments != null) {
             view.calculator_screen.text =
-                    arguments
+                    arguments!!
                             .getString(getString(R.string.amount_from_detail_transaction_screen))
         }
 

@@ -16,7 +16,7 @@ import kryx07.expensereconcilerclient.App
 import kryx07.expensereconcilerclient.R
 import kryx07.expensereconcilerclient.base.fragment.RefreshableFragment
 import kryx07.expensereconcilerclient.events.SetDrawerStatusEvent
-import kryx07.expensereconcilerclient.model.transactions.Transaction
+import kryx07.expensereconcilerclient.model.transaction.Transaction
 import kryx07.expensereconcilerclient.ui.transactions.detail.TransactionDetailFragment
 import org.greenrobot.eventbus.EventBus
 import timber.log.Timber
@@ -29,20 +29,20 @@ class TransactionsFragment : RefreshableFragment(), TransactionsMvpView {
     private lateinit var adapter: TransactionsAdapter
     @Inject lateinit var eventBus: EventBus
 
-    private var actionMode: android.support.v7.view.ActionMode? = null
+    /*private var actionMode: android.support.v7.view.ActionMode? = null
     private var actionModeCallback: android.support.v7.view.ActionMode.Callback =
-            TransactionSelectionAction(this)
+            TransactionSelectionAction(this)*/
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
-        val view = inflater!!.inflate(R.layout.fragment_transactions, container, false)
+        val view = inflater.inflate(R.layout.fragment_transactions, container, false)
         super.onCreateView(inflater, view.transactions_swipe_refresher, savedInstanceState)
         ButterKnife.bind(this, view)
         App.appComponent.inject(this)
         presenter.attachView(this)
         setupAdapter(view)
 
-        activity.dashboard_toolbar.title = getString(R.string.my_transactions)
+//        activity!!.dashboard_toolbar.title = getString(R.string.my_transactions)
         registerForContextMenu(view.transactions_recycler)
         eventBus.post(SetDrawerStatusEvent(false))
 
@@ -66,18 +66,18 @@ class TransactionsFragment : RefreshableFragment(), TransactionsMvpView {
     }
 
     override fun onTransactionClick(position: Int) {
-        if (actionMode != null) {
+       /* if (actionMode != null) {
             onTransactionLongClick(position)
         } else {
             presenter.handleTransactionClick(adapter.transactions[position])
-        }
+        }*/
     }
 
     override fun onTransactionLongClick(position: Int): Boolean {
-        if (actionMode == null) {
+        /*if (actionMode == null) {
             this.actionMode = (activity as AppCompatActivity).startSupportActionMode(actionModeCallback)
         }
-        toggleTransactionSelection(position)
+        toggleTransactionSelection(position)*/
         return true
     }
 
@@ -87,7 +87,7 @@ class TransactionsFragment : RefreshableFragment(), TransactionsMvpView {
     }
 
     private fun displaySelectedCountOnActionBar() {
-        val count = adapter.selectedItemCount
+        /*val count = adapter.selectedItemCount
         if (count == 0) {
             actionMode?.finish()
         } else {
@@ -97,7 +97,7 @@ class TransactionsFragment : RefreshableFragment(), TransactionsMvpView {
                 actionMode?.title = count.toString() + " " + getString(R.string.transactions_selected)
             }
             actionMode?.invalidate()
-        }
+        }*/
     }
 
     override fun onCreateActionMode() {
@@ -115,7 +115,7 @@ class TransactionsFragment : RefreshableFragment(), TransactionsMvpView {
         view?.fab?.visibility = View.VISIBLE
         view?.transactions_swipe_refresher?.isEnabled = true
         adapter.clearSelection()
-        actionMode = null
+        //actionMode = null
     }
 
     override fun onRefresh() = presenter.requestTransactions()
@@ -128,15 +128,15 @@ class TransactionsFragment : RefreshableFragment(), TransactionsMvpView {
 
     override fun updateData(transactions: List<Transaction>) = adapter.updateData(transactions)
 
-    override fun showSnackAndLog(string: String) {
+    /*override fun showSnackAndLog(string: String) {
         Timber.e(string)
         Snackbar.make(view!!, string, Snackbar.LENGTH_LONG).show()
     }
 
     override fun showSnackAndLog(int: Int) {
-        Timber.e(context.getString(int))
-        Snackbar.make(view!!, context.getString(int), Snackbar.LENGTH_LONG).show()
-    }
+        Timber.e(context?.getString(int))
+        Snackbar.make(view!!, context?.getString(int)!!, Snackbar.LENGTH_LONG).show()
+    }*/
 
 
 }

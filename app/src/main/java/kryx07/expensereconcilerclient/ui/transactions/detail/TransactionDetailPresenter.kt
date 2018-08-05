@@ -11,7 +11,7 @@ import kryx07.expensereconcilerclient.events.UpdateTransactionAmountEvent
 import kryx07.expensereconcilerclient.events.UpdateTransactionDateEvent
 import kryx07.expensereconcilerclient.events.UpdateTransactionGroupEvent
 import kryx07.expensereconcilerclient.events.UpdateTransactionPayerEvent
-import kryx07.expensereconcilerclient.model.transactions.Transaction
+import kryx07.expensereconcilerclient.model.transaction.Transaction
 import kryx07.expensereconcilerclient.model.users.User
 import kryx07.expensereconcilerclient.network.ApiClient
 import kryx07.expensereconcilerclient.utils.SharedPreferencesManager
@@ -33,7 +33,7 @@ class TransactionDetailPresenter @Inject constructor(private var apiClient: ApiC
 ) : BasePresenter<TransactionDetailMvpView>() {
 
 
-    private var transaction: Transaction = Transaction()
+    lateinit var transaction: Transaction
 
     override fun attachView(view: TransactionDetailMvpView) {
         super.attachView(view)
@@ -51,16 +51,16 @@ class TransactionDetailPresenter @Inject constructor(private var apiClient: ApiC
 
     private fun initTransaction(bundle: Bundle?) {
         view.showProgress()
-        if (transaction.isEmpty()) {
-            val transaction = getTransactionFromBundle(bundle)
-            if (transaction != null) {
-                this.transaction = transaction
-            } else {
-                this.transaction.date = LocalDate.now()
-                this.transaction.common=true
-                setMyUserAsPayerDefault(sharedPreferencesManager.read(context.getString(R.string.my_user)).toInt())
-            }
-        }
+        /* if (transaction.isEmpty()) {
+             val transaction = getTransactionFromBundle(bundle)
+             if (transaction != null) {
+                 this.transaction = transaction
+             } else {
+                 this.transaction.date = LocalDate.now()
+                 this.transaction.common=true
+                 setMyUserAsPayerDefault(sharedPreferencesManager.read(context.getString(R.string.my_user)).toInt())
+             }
+         }*/
         updateView()
         view.hideProgress()
 
@@ -71,7 +71,7 @@ class TransactionDetailPresenter @Inject constructor(private var apiClient: ApiC
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ u ->
-                    this.transaction.payer = u
+                    //                    this.transaction.payer = u
                     updateView()
                 })
     }
@@ -86,7 +86,7 @@ class TransactionDetailPresenter @Inject constructor(private var apiClient: ApiC
     fun saveTransaction() {
         view.showProgress()
 
-        if (this.transaction.id == 0) {
+        if (this.transaction.publicId == "") {
             addTransaction(this.transaction)
         } else {
             updateTransaction(this.transaction)
@@ -110,7 +110,7 @@ class TransactionDetailPresenter @Inject constructor(private var apiClient: ApiC
     }
 
     private fun updateTransaction(transaction: Transaction) {
-        apiClient.service
+        /*apiClient.service
                 .updateTransaction(transaction.id, transaction)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -118,59 +118,59 @@ class TransactionDetailPresenter @Inject constructor(private var apiClient: ApiC
                     //    transactionsView.updateView(receivedTransaction)
                     Timber.e("Received after update: " + receivedTransaction)
                     view.popBackStack()
-                })
+                })*/
     }
 
     @Subscribe
     fun onUpdatePayerEvent(updateTransactionPayerEvent: UpdateTransactionPayerEvent) {
-        transaction.payer = updateTransactionPayerEvent.payer
+//        transaction.payer = updateTransactionPayerEvent.payer
     }
 
     @Subscribe
     fun onUpdateGroupEvent(updateTransactionGroupEvent: UpdateTransactionGroupEvent) {
-        transaction.group = updateTransactionGroupEvent.group
+//        transaction.group = updateTransactionGroupEvent.group
     }
 
     @Subscribe
     fun onDateUpdateEvent(updateTransactionDateEvent: UpdateTransactionDateEvent) {
-        transaction.date = updateTransactionDateEvent.date
-        view.updateDateView(StringUtilities.formatDate(transaction.date))
+//        transaction.date = updateTransactionDateEvent.date
+//        view.updateDateView(StringUtilities.formatDate(transaction.date))
     }
 
     @Subscribe
     fun onAmountUpdateEvent(updateTransactionAmountEvent: UpdateTransactionAmountEvent) {
-        transaction.amount = BigDecimal(updateTransactionAmountEvent.amount)
-        view.updateAmountView(transaction.amount.toString())
+//        transaction.amount = BigDecimal(updateTransactionAmountEvent.amount)
+//        view.updateAmountView(transaction.amount.toString())
     }
 
     fun handleDescriptionChanged(description: String) {
-        transaction.description = description
+//        transaction.description = description
     }
 
     fun handleAmountChanged(amount: String) {
         try {
-            transaction.amount = BigDecimal(amount)
+//            transaction.amount = BigDecimal(amount)
         } catch (e: NumberFormatException) {
-            transaction.amount = BigDecimal.ZERO
+//            transaction.amount = BigDecimal.ZERO
         }
     }
 
     fun toggleCommonInput() {
-        transaction.common = !transaction.common
-        view.updateCommonView(transaction.common)
+//        transaction.common = !transaction.common
+//        view.updateCommonView(transaction.common)
     }
 
     private fun updateView() {
 
-        view.updateDateView(StringUtilities.formatDate(transaction.date))
-        view.updateAmountView(transaction.amount.toString())
-        if (transaction.amount == BigDecimal.ZERO) {
-            view.updateAmountView("")
-        }
-        view.updateDescriptionView(transaction.description)
-        view.updatePayerView(transaction.payer.username)
-        view.updateGroupView(transaction.group.name)
-        view.updateCommonView(transaction.common)
+//        view.updateDateView(StringUtilities.formatDate(transaction.date))
+//        view.updateAmountView(transaction.amount.toString())
+//        if (transaction.amount == BigDecimal.ZERO) {
+//            view.updateAmountView("")
+//        }
+//        view.updateDescriptionView(transaction.description)
+//        view.updatePayerView(transaction.payer.username)
+//        view.updateGroupView(transaction.group.name)
+//        view.updateCommonView(transaction.common)
 
     }
 

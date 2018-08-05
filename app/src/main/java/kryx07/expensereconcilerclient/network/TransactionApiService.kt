@@ -1,7 +1,7 @@
 package kryx07.expensereconcilerclient.network
 
 import io.reactivex.Observable
-import kryx07.expensereconcilerclient.model.transactions.Transaction
+import kryx07.expensereconcilerclient.model.transaction.Transaction
 import kryx07.expensereconcilerclient.model.users.Group
 import kryx07.expensereconcilerclient.model.users.User
 import retrofit2.http.Body
@@ -11,7 +11,7 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface ApiService {
+interface TransactionApiService {
 
     @get:GET("users/")
     val allUsers: Observable<List<User>>
@@ -19,8 +19,8 @@ interface ApiService {
     @GET("users/{id}")
     fun getUserById(@Path("id") id: Int) : Observable<User>
 
-    @GET("users/{id}/transactions")
-    fun getUsersTransactions(@Path("id") id: Int): Observable<List<Transaction>>
+    @GET("transactions")
+    fun getUsersTransactions(): Observable<List<Transaction>>
 
     @GET("groups/byUserId/")
     fun getUsersGroups(@Query("userId") userId: Int): Observable<List<Group>>

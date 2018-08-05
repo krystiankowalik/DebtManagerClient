@@ -4,16 +4,12 @@ import android.support.v4.app.Fragment
 import kryx07.expensereconcilerclient.base.fragment.MvpView
 import kryx07.expensereconcilerclient.events.HideRefresherEvent
 import kryx07.expensereconcilerclient.events.ReplaceFragmentEvent
-import kryx07.expensereconcilerclient.model.transactions.Transaction
+import kryx07.expensereconcilerclient.model.transaction.Transaction
 import org.greenrobot.eventbus.EventBus
 
 interface TransactionsMvpView : MvpView, TransactionsAdapter.OnTransactionClickListener {
 
     fun updateData(transactions: List<Transaction>)
-
-    fun showSnackAndLog(string: String)
-
-    fun showSnackAndLog(int: Int)
 
     fun onCreateActionMode()
 

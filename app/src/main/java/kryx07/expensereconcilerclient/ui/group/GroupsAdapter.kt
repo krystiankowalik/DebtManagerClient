@@ -16,12 +16,12 @@ class GroupsAdapter(private val onGroupClickListener: OnGroupClickListener) : Re
 
     var groups = mutableListOf<Group>()
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): GroupsHolder {
-        return GroupsHolder(LayoutInflater.from(parent?.context).inflate(R.layout.item_groups_adapter, parent, false),onGroupClickListener)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupsHolder {
+        return GroupsHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_groups_adapter, parent, false),onGroupClickListener)
     }
 
-    override fun onBindViewHolder(holder: GroupsHolder?, position: Int) {
-        holder?.setupGroup(groups[position])
+    override fun onBindViewHolder(holder: GroupsHolder, position: Int) {
+        holder.setupGroup(groups[position])
     }
 
     override fun getItemCount(): Int = groups.size
